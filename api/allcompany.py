@@ -1,5 +1,9 @@
 import requests
 import json
+import time
+from django.views.decorators.http import require_http_methods
+
+from django.http import JsonResponse
 
 listfordict = []
 
@@ -382,7 +386,7 @@ def shenzhen(depcode, arrcode, day):
 
     try:
         cookies = {
-            'JSESSIONID': 'D8EAC55F9A6FBB2BC79F75752078F13D',
+            'JSESSIONID': '767A56CBDCCA05C09BC313DBF9016CC0',
             'x-s3-sid': 'S123Xxuxdpu8514515jur6nzj',
             'A_JNID': '50a67a76e465568dc3f661316e74b937082c880a18de0878aa6e8%3B%3BRMKMXU%2FRqsjuyJ1NrTMVpz6QRkqW74WHtVwy7zyRYKr%2BxBTgUWJGIXC7%2FZ6B0QJAFrRBePesFEbhAiD3zNxIWhe%2FrfJTaF%2FPDjFOUXyJZffitQyTEkptEiVESyKpaENzyMy6mHgzaFxlVlAglWKheNsHv5eTJ8EUdU6xWXRdHE3qTlg5YltOHpKQ2uGb%2B8u%2BmYkHzQ6sU%2FeAk8Uh4Oqrn6QWqX7q3FwOmg2pVwC8CXRXZfcVB43RcMG9t%2F8CqsSY2Ug%2BxuxnHSuguNjmOb%2Bjv4PqFZ8axdnZ3IaLvYrA0eHCFjtpFlVkwwOuPJANk3Xqm%2BwawjmityWiGOYlvEE3%2FH2%2F46zGpKkK57uRPC2Rq5FjnDakbcygfVswgqfRM8k2vHG6IzBhWpGaCLzQf%2FObkA%3D%3D',
             'A_SSID': '440a3f432c39eb7b923e5aabecd298d3',
@@ -456,9 +460,9 @@ def shenzhen(depcode, arrcode, day):
             # print(flightID)
 
             dcity = item['orgCityCH']
-            dtime = item['orgTime']
+            dtime = date +' '+ item['orgTime']+':00'
             acity = item['dstCityCH']
-            atime = item['dstTime']
+            atime = date +' '+ item['dstTime']+':00'
 
             pricelist = item['classInfoList']
             i = len(pricelist)
@@ -471,7 +475,7 @@ def shenzhen(depcode, arrcode, day):
                 'dCityName': dcity,
                 'aCityName': acity,
                 'date': date,
-                'dTime:': dtime,
+                'dTime': dtime,
                 'aTime': atime,
                 'cabin': cabin,
                 'price': price,
@@ -485,7 +489,7 @@ def shenzhen(depcode, arrcode, day):
                 'dCityName': dcity,
                 'aCityName': acity,
                 'date': date,
-                'dTime:': dtime,
+                'dTime': dtime,
                 'aTime': atime,
                 'cabin': cabin,
                 'price': price,
@@ -579,9 +583,9 @@ def donghang(dep, arr, day):
             # print(item)
 
             acity = item['ArrCityName']
-            atime = item['ArrDateTime']
+            atime = item['ArrDateTime']+':00'
             dcity = item['DepCityName']
-            dtime = item['DepDateTime']
+            dtime = item['DepDateTime']+':00'
 
             date = item['FlightDate']
 
@@ -604,7 +608,7 @@ def donghang(dep, arr, day):
                                 'dCityName': dcity,
                                 'aCityName': acity,
                                 'date': date,
-                                'dTime:': dtime,
+                                'dTime': dtime,
                                 'aTime': atime,
                                 'cabin': cabin,
                                 'price': price,
@@ -617,7 +621,7 @@ def donghang(dep, arr, day):
                                 'dCityName': dcity,
                                 'aCityName': acity,
                                 'date': date,
-                                'dTime:': dtime,
+                                'dTime': dtime,
                                 'aTime': atime,
                                 'cabin': cabin,
                                 'price': price,
@@ -881,8 +885,8 @@ def nanhang(dep, arr, dayBZ):
         data = '{' \
                '"depCity":"' + dep + '",' \
                                      '"arrCity":"' + arr + '",' \
-                                                           '"flightDate":"' + day + '",' \
-                                                                                    '"adultNum":"1",' \
+                '"flightDate":"' + day + '",' \
+                                         '"adultNum":"1",' \
                                                                                     '"childNum":"0",' \
                                                                                     '"infantNum":"0",' \
                                                                                     '"cabinOrder":"0",' \
@@ -902,8 +906,17 @@ def nanhang(dep, arr, dayBZ):
 
         jsdata = json.loads(response.text)['data']['segment'][0]
 
-        acity = json.loads(response.text)['data']['citys'][0]['zhName']
-        dcity = json.loads(response.text)['data']['citys'][1]['zhName']
+        # if getCityID(json.loads(response.text)['data']['citys'][1]['zhName']) == arr:
+        #     acity = json.loads(response.text)['data']['citys'][1]['zhName']
+        #     dcity = json.loads(response.text)['data']['citys'][0]['zhName']
+        # else:
+        #     acity = json.loads(response.text)['data']['citys'][0]['zhName']
+        #     dcity = json.loads(response.text)['data']['citys'][1]['zhName']
+        for i in json.loads(response.text)['data']['citys']:
+            if getCityID(i['zhName']) == dep:
+                dcity = i['zhName']
+            if getCityID(i['zhName']) == arr:
+                acity = i['zhName']
 
         # list = []
         company = '南方航空'
@@ -1005,8 +1018,8 @@ def nanhang(dep, arr, dayBZ):
             date = i['arrDate']
             flightID = i['flightNo']
 
-            atime = i['arrTime'][:2] + ':' + i['arrTime'][2:]
-            dtime = i['depTime'][:2] + ':' + i['depTime'][2:]
+            atime = dayBZ + ' ' + i['arrTime'][:2] + ':' + i['arrTime'][2:] +':00'
+            dtime = dayBZ + ' ' + i['depTime'][:2] + ':' + i['depTime'][2:] +':00'
             # print(atime)
 
             cabin = i['cabin'][len(i['cabin']) - 1]['adultFareBasis']
@@ -1018,7 +1031,7 @@ def nanhang(dep, arr, dayBZ):
                 'dCityName': dcity,
                 'aCityName': acity,
                 'date': date,
-                'dTime:': dtime,
+                'dTime': dtime,
                 'aTime': atime,
                 'cabin': cabin,
                 'price': price,
@@ -1031,6 +1044,17 @@ def nanhang(dep, arr, dayBZ):
 
     return listfordict
 
+def trans_format(time_string, from_format, to_format='%Y.%m.%d %H:%M:%S'):
+    """
+    @note 时间格式转化
+    :param time_string:
+    :param from_format:
+    :param to_format:
+    :return:
+    """
+    time_struct = time.strptime(time_string,from_format)
+    times = time.strftime(to_format, time_struct)
+    return times
 # depcityname = '广州'
 # arrcityname = '南京'
 # day = '2021-05-21'
@@ -1054,12 +1078,14 @@ def nanhang(dep, arr, dayBZ):
 #
 # print(listfordict)
 
-
-def allsearch():
-
-    depcityname = '北京大兴'
-    arrcityname = '广州'
-    day = '2021-05-21'
+@require_http_methods(["GET"])
+def allsearch(request):
+    response = {}
+    global listfordict
+    listfordict = []
+    depcityname = request.GET.get('departure')  # '北京大兴'
+    arrcityname = request.GET.get('destination')  # '广州'
+    day = trans_format(request.GET.get('goDate')[:15], '%a %b %d %Y', '%Y-%m-%d')[:10]  # '2021-05-21'
 
     depcode = getCityID(depcityname)
     arrcode = getCityID(arrcityname)
@@ -1072,5 +1098,8 @@ def allsearch():
     nanhang(depcode, arrcode, day)
 
     print(listfordict)
+    response = {"data" : listfordict}
 
-allsearch()
+    return JsonResponse(response)
+
+# allsearch()

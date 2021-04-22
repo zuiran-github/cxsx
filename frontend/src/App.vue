@@ -1,23 +1,28 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <!-- <scrollbar></scrollbar> -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'App'
+// import NavBar from './components/NavBar.vue'
+import scrollBar from './components/scrollBar.vue'
+  export default {
+    name: 'app',
+    components:{
+    // 'navbar':NavBar
+    'scrollbar':scrollBar
+  }
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

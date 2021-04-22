@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="http://api.map.baidu.com/api?type=webgl&v=1.0&ak=umawrZEEKAx20cCK1NHsRLmLYwmgpURB"></script>
+    <title>单个地址解析</title>
+    <style>
+       body,html{
+           width: 100%;
+           height: 100%;
+           padding: 0;
+           margin: 0;
+       }
+       #container{
+           width: 100%;
+           height: 500px;
+           overflow: hidden;
+       }
+       #result{
+           position: fixed;
+           top: 10px;
+           left: 10px;
+           width: 250px;
+           height: 30px;
+           line-height: 30px;
+           text-align: center;
+           background: #fff;
+           box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+           border-radius: 7px;
+           z-index: 99;
+       }
+	#r-result{width:100%;}
+    </style>
+</head>
+<body>
+    <div id='container'></div>
+    <div id='result'>北京市海淀区新建宫门路19号</div>
+<div id='r-result'></div>
+<button type = "button" onclick="f1()">点击</button>
+<script type = "text/javascript">
+var addressOfHotel = "济南市历下区文化西路77号";
+</script>
+<script type = "text/javascript" src = "searchAllSpots.js">
+</script>
+<script type = "text/javascript">
+var ra = searchAllSpots(addressOfHotel);
+function f1(){
+document.getElementById("r-result").innerText = ra[140].title;}
+</script>
+</body>
+</html>
