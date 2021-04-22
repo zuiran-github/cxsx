@@ -11,6 +11,7 @@
 # 用户可以在该页面直接进入选中的酒店订购网站进行预订。
 import copy
 import numpy as np
+# from .qunar import *
 import qunar
 #定义一个初始测试数据集——数组
 #选择地点后，得到该地区的酒店实时信息

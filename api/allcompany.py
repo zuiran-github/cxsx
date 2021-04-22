@@ -834,7 +834,7 @@ def chunqiu(dep, arr, day):
 def nanhang(dep, arr, dayBZ):
 
     '''
-    南方航空
+    南方航空查询机票
     :param dep: 大写城市代码
     :param arr: 大写城市代码
     :param day: 2021-05-06

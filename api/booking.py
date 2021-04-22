@@ -57,7 +57,8 @@ def printList(list,day):
         print(str.rstrip(';highlight_room=#hotelTmpl').strip())
         #print(name.select('.bui-rating bui-rating')[0]['aria-label'].get_text())
         print(name.select('.bui-review-score__text')[0].get_text().strip())
-        price =int(int(name.select('.bui-price-display__value')[0].get_text().strip().strip('元').replace(',',''))/day)
-        print('CNY',price)
+        #price =int(int(name.select('.bui-price-display__value')[0].get_text().strip().strip('元').replace(',',''))/day)
+        price = (name.select('.bui-price-display__value')[0].get_text().strip())
+        print(price)
 
 getList('上海','2021-04-22','2021-04-25')
