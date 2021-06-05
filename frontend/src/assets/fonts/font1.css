@@ -4,3 +4,17 @@
     font-weight: normal;  
     font-style: normal;  
  }
+
+ @font-face {  
+    font-family: 'GaoDuanHei'; 
+    src: url('./站酷高端黑.ttf'); 
+    font-weight: normal;  
+    font-style: normal;  
+ }
+
+ @font-face {  
+    font-family: 'YuYangTi01'; 
+    src: url('./站酷仓耳渔阳体-W01.ttf'); 
+    font-weight: normal;  
+    font-style: normal;  
+ }

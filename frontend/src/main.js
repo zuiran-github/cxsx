@@ -8,7 +8,20 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './mock.js';
 import axios from 'axios';
 import "@/assets/fonts/font1.css";
+import VideoBg from 'vue-videobg';
+import BaiduMap from 'vue-baidu-map';
+import {VueJsonp} from 'vue-jsonp';
 
+Vue.use(VueJsonp);
+
+Vue.use(BaiduMap, {
+  ak: 'umawrZEEKAx20cCK1NHsRLmLYwmgpURB'    //这个地方是官方提供的ak密钥
+});
+
+Vue.component('video-bg', VideoBg);
+
+
+// console.log(VueJsonp.install)
 
 //require('.mock');
 
@@ -20,6 +33,6 @@ Vue.use(ElementUI);
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  components: { App,VideoBg },
   template: '<App/>'
 }).$mount('#app')

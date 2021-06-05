@@ -1,19 +1,28 @@
 <template>
   <div id="app">
-    <!-- <scrollbar></scrollbar> -->
+    <!-- <navbar></navbar> -->
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-// import NavBar from './components/NavBar.vue'
+import navbar from './components/NavBar.vue'
 import scrollBar from './components/scrollBar.vue'
   export default {
     name: 'app',
     components:{
-    // 'navbar':NavBar
-    'scrollbar':scrollBar
-  }
+    'navbar':navbar
+    // 'scrollbar':scrollBar
+  },
+  
+  beforeCreate() {
+    document
+      .querySelector("body")
+      .setAttribute("style", "background-color:rgba(191, 218, 217, 0.24);");
+  },
+  beforeDestroy() {
+    document.querySelector("body").setAttribute("style", "background-color:''");
+  },
 }
 </script>
 
