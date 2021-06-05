@@ -7,6 +7,7 @@ from django.http import JsonResponse
 
 listfordict = []
 
+
 def getCityID(cityname):
     '''
     :param cityname: 北京大兴
@@ -1503,9 +1504,8 @@ def allsearch(request):
     chunqiu(depcityname, arrcityname, day)
 
     print(listfordict)
-    response = {"data" : listfordict}
+    response = {"data": listfordict}
 
     return JsonResponse(response)
 
-# allsearch()
-
+allsearch()

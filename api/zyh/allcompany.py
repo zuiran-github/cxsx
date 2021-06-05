@@ -1,11 +1,43 @@
 import requests
 import json
-import time
-from django.views.decorators.http import require_http_methods
-
-from django.http import JsonResponse
 
 listfordict = []
+
+def getCityName(citycode):
+    '''
+    根据大写城市代码返回城市中文名称
+    :param citycode: 大写城市代码
+    :return:
+    '''
+    try:
+        dict = {'安庆': 'AQG', '阿克苏': 'AKU', '北海': 'BHY', '毕节': 'BFJ', '包头': 'BAV', '北京大兴': 'PKX', '北京首都': 'PEK',
+                '常州': 'CZX', '常德': 'CGD', '成都': 'CTU', '池州': 'JUH', '长春': 'CGQ', '重庆': 'CKG', '长沙': 'CSX', '承德': 'CDE',
+                '大同': 'DAT', '大连': 'DLC', '敦煌': 'DNH', '大庆': 'DQA', '大理': 'DLU', '恩施': 'ENH', '福州': 'FOC', '贵阳': 'KWE',
+                '广州': 'CAN', '固原': 'GYU', '赣州': 'KOW', '桂林': 'KWL', '杭州': 'HGH', '海拉尔': 'HLD', '呼和浩特': 'HET',
+                '衡阳': 'HNY', '海口': 'HAK', '汉中': 'HZG', '哈尔滨': 'HRB', '黄山': 'TXN', '邯郸': 'HDG', '合肥': 'HFE', '淮安': 'HIA',
+                '九寨': 'JZH', '嘉峪关': 'JGN', '景德镇': 'JDZ', '济宁': 'JNG', '揭阳': 'SWA', '井冈山': 'JGS', '金昌': 'JIC',
+                '济南': 'TNA', '昆明': 'KMG', '库尔勒': 'KRL', '喀什': 'KHG', '拉萨': 'LXA', '柳州': 'LZH', '泸州': 'LZO', '陇南': 'LNL',
+                '临沂': 'LYI', '连云港': 'LYG', '兰州': 'LHW', '连城': 'LCX', '洛阳': 'LYA', '丽江': 'LJG', '牡丹江': 'MDG',
+                '满洲里': 'NZH', '梅州': 'MXZ', '绵阳': 'MIG', '南昌': 'KHN', '南充': 'NAO', '宁波': 'NGB', '南阳': 'NNY', '南京': 'NKG',
+                '南通': 'NTG', '南宁': 'NNG', '鄂尔多斯': 'DSN', '攀枝花': 'PZI', '秦皇岛': 'BPE', '衢州': 'JUZ', '琼海': 'BAR',
+                '青岛': 'TAO', '泉州': 'JJN', '日照': 'RIZ', '石家庄': 'SJW', '三亚': 'SYX', '三清山': 'SQD', '深圳': 'SZX',
+                '沈阳': 'SHE', '上海浦东': 'PVG', '三明': 'SQJ', '松原': 'YSQ', '上海虹桥': 'SHA', '十堰': 'WDS', '唐山': 'TVS',
+                '铜仁': 'TEN', '太原': 'TYN', '腾冲': 'TCZ', '台州': 'HYN', '吐鲁番': 'TLQ', '天津': 'TSN', '温州': 'WNZ',
+                '武夷山': 'WUS', '无锡': 'WUX', '乌鲁木齐': 'URC', '乌海': 'WUA', '万州': 'WXN', '武汉': 'WUH', '威海': 'WEH',
+                '忻州': 'WUT', '西双版纳': 'JHG', '襄阳': 'XFN', '西安': 'XIY', '西昌': 'XIC', '厦门': 'XMN', '兴义': 'ACX',
+                '徐州': 'XUZ', '西宁': 'XNN', '伊宁': 'YIN', '义乌': 'YIW', '宜昌': 'YIH', '宜春': 'YIC', '盐城': 'YNZ', '宜宾': 'YBP',
+                '银川': 'INC', '扬州': 'YTY', '烟台': 'YNT', '岳阳': 'YYA', '榆林': 'UYN', '运城': 'YCU', '延吉': 'YNJ', '中卫': 'ZHY',
+                '湛江': 'ZHA', '张家口': 'ZQZ', '张家界': 'DYG', '遵义新舟': 'ZYI', '遵义茅台': 'WMT', '临汾': 'LFQ', '珠海': 'ZUH',
+                '郑州': 'CGO', '扎兰屯': 'NZL', '舟山': 'HSN'}
+        for key, value in dict.items():
+            if value == citycode:
+                return key
+    except:
+        print("获取城市名字出错")
+
+
+
+
 
 def getCityID(cityname):
     '''
@@ -371,6 +403,8 @@ def shandong(dep, arr, day1):
 
     return listfordict
 
+
+
 def shenzhen(depcode, arrcode, day):
 
     '''
@@ -386,7 +420,7 @@ def shenzhen(depcode, arrcode, day):
 
     try:
         cookies = {
-            'JSESSIONID': '767A56CBDCCA05C09BC313DBF9016CC0',
+            'JSESSIONID': 'C95747571AFC84506FA5589345B0313A',
             'x-s3-sid': 'S123Xxuxdpu8514515jur6nzj',
             'A_JNID': '50a67a76e465568dc3f661316e74b937082c880a18de0878aa6e8%3B%3BRMKMXU%2FRqsjuyJ1NrTMVpz6QRkqW74WHtVwy7zyRYKr%2BxBTgUWJGIXC7%2FZ6B0QJAFrRBePesFEbhAiD3zNxIWhe%2FrfJTaF%2FPDjFOUXyJZffitQyTEkptEiVESyKpaENzyMy6mHgzaFxlVlAglWKheNsHv5eTJ8EUdU6xWXRdHE3qTlg5YltOHpKQ2uGb%2B8u%2BmYkHzQ6sU%2FeAk8Uh4Oqrn6QWqX7q3FwOmg2pVwC8CXRXZfcVB43RcMG9t%2F8CqsSY2Ug%2BxuxnHSuguNjmOb%2Bjv4PqFZ8axdnZ3IaLvYrA0eHCFjtpFlVkwwOuPJANk3Xqm%2BwawjmityWiGOYlvEE3%2FH2%2F46zGpKkK57uRPC2Rq5FjnDakbcygfVswgqfRM8k2vHG6IzBhWpGaCLzQf%2FObkA%3D%3D',
             'A_SSID': '440a3f432c39eb7b923e5aabecd298d3',
@@ -459,10 +493,10 @@ def shenzhen(depcode, arrcode, day):
             flightID = item['flightNo']
             # print(flightID)
 
-            dcity = item['orgCityCH']
-            dtime = date +' '+ item['orgTime']+':00'
-            acity = item['dstCityCH']
-            atime = date +' '+ item['dstTime']+':00'
+            dcity = item['orgAirport']
+            dtime = item['orgTime']
+            acity = item['dstAirport']
+            atime = item['dstTime']
 
             pricelist = item['classInfoList']
             i = len(pricelist)
@@ -475,7 +509,7 @@ def shenzhen(depcode, arrcode, day):
                 'dCityName': dcity,
                 'aCityName': acity,
                 'date': date,
-                'dTime': dtime,
+                'dTime:': dtime,
                 'aTime': atime,
                 'cabin': cabin,
                 'price': price,
@@ -489,7 +523,7 @@ def shenzhen(depcode, arrcode, day):
                 'dCityName': dcity,
                 'aCityName': acity,
                 'date': date,
-                'dTime': dtime,
+                'dTime:': dtime,
                 'aTime': atime,
                 'cabin': cabin,
                 'price': price,
@@ -519,6 +553,14 @@ def donghang(dep, arr, day):
 
     try:
         url = 'http://www.juneyaoair.com/UnitOrderWebAPI/Book/QueryFlightFareNew?'
+        url = 'http://www.juneyaoair.com/UnitOrderWebAPI/Book/QueryFlightFareNew?' \
+              'flightType=OW' \
+              '&tripType=D' \
+              '&directType=D' \
+              '&departureDate=' + day + \
+              '&sendCode=' + dep + \
+              '&arrCode=' + arr + \
+              '&returnDate='
 
         headers = {
             'Host': 'www.juneyaoair.com',
@@ -542,19 +584,24 @@ def donghang(dep, arr, day):
                        '&returnDate=2021-05-12',
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            # 'Cookie': 'ASP.NET_SessionId=0zymuwtk3sm3jegrhdjdmhq0;'
-            'Cookie': 'ASP.NET_SessionId=tzcxr5lwqoxzugwquyrukxcp',
+            'Cookie': 'ASP.NET_SessionId=0zymuwtk3sm3jegrhdjdmhq0;'
         }
 
-        data = "flightType=OW" \
-               "&tripType=D" \
-               "&directType=D" \
-               "&departureDate=" + day + \
-               "&sendCode=" + dep + \
-               "&arrCode=" + arr + \
-               "&returnDate="
 
-        r = requests.post(url=url, data=data, headers=headers)
+
+        # data = "flightType=OW" \
+        #        "&tripType=D" \
+        #        "&directType=D" \
+        #        "&departureDate=" + day + \
+        #        "&sendCode=" + dep + \
+        #        "&arrCode=" + arr + \
+        #        "&returnDate="
+
+        data = 'blackbox=eyJ2IjoiKzgzY2FnREJIZFFwdHduMzhDQnQ2ZmVSUHNEK2ZwRGxLMGdzdWlJSEFXcDlZby92ZmdsSExxWDBJT2FzSnQzRCIsIm9zIjoid2ViIiwiaXQiOjQwMCwidCI6IkRnSHk1MXBham1OZVhGaDdiVVpiV0oycThITGhGK1ZrSloxQ0FLR05NSmd3US9TcERwejY3czN3MnlSWGR5R2RtNUtnbmVwVmFmWFNrODdWclFWVTVRPT0ifQ%253D%253D' \
+               '&sendCity=%E4%B8%8A%E6%B5%B7' \
+               '&arrCity=%E8%A5%BF%E5%AE%89'
+
+        r = requests.post(url=url, data=data, headers=headers, verify=False)
         print(r.status_code)
         # print(type(r.text))
         jsdata = json.loads(r.text)['FlightInfoList']
@@ -583,10 +630,10 @@ def donghang(dep, arr, day):
             # print(type(item))
             # print(item)
 
-            acity = item['ArrCityName']
-            atime = item['ArrDateTime']+':00'
-            dcity = item['DepCityName']
-            dtime = item['DepDateTime']+':00'
+            acity = item['ArrCityName'] + item['ArrAirportName']
+            atime = item['ArrDateTime']
+            dcity = item['DepCityName'] + item['DepAirportName']
+            dtime = item['DepDateTime']
 
             date = item['FlightDate']
 
@@ -609,7 +656,7 @@ def donghang(dep, arr, day):
                                 'dCityName': dcity,
                                 'aCityName': acity,
                                 'date': date,
-                                'dTime': dtime,
+                                'dTime:': dtime,
                                 'aTime': atime,
                                 'cabin': cabin,
                                 'price': price,
@@ -838,7 +885,7 @@ def nanhang(dep, arr, dayBZ):
     南方航空
     :param dep: 大写城市代码
     :param arr: 大写城市代码
-    :param day: 2021-05-06
+    :param dayBZ: 2021-05-06
     :return: 列表
     '''
 
@@ -1050,330 +1097,7 @@ def nanhang(dep, arr, dayBZ):
         print("南方航空报错或未查询到数据")
 
     return listfordict
-# def nanhang(dep, arr, dayBZ):
-#
-#     '''
-#     南方航空查询机票
-#     :param dep: 大写城市代码
-#     :param arr: 大写城市代码
-#     :param day: 2021-05-06
-#     :return: 列表
-#     '''
-#
-#     try:
-#         day = dayBZ[:4] + dayBZ[5:7] + dayBZ[8:]  # 南方航空传参要求20210505
-#
-#         cookies = {
-#             'JSESSIONID': '2EA81546C9C8907FDA2161AFB6F4F448',
-#             'likev_user_id': '286b9ea3-071b-4b9a-82c2-49b196d21373',
-#             '_gscu_422057653': '14841486g9gpq115',
-#             '_gcl_au': '1.1.1434185319.1614841509',
-#             'sid': 'b59095d034474eaea6e83cf60390dc87',
-#             'last_session_stm_8mrmut7r76ntg21b': '1619055584510',
-#             'last_session_id_8mrmut7r76ntg21b': '1be3306f-dff7-45a1-db6a-37e58c32afe0',
-#             'temp_zh': 'cou%3D5%3Bsegt%3D%E5%8D%95%E7%A8%8B%3Btime%3D2021-05-21%3B%E5%8C%97%E4%BA%AC-%E4%B8%8A%E6%B5%B7%3B1%2C0%2C0%3B00%3B%26cou%3D5%3Bsegt%3D%E5%8D%95%E7%A8%8B%3Btime%3D2021-05-21%3B%E4%B8%8A%E6%B5%B7-%E5%8C%97%E4%BA%AC%3B1%2C0%2C0%3B00%3B%26cou%3D5%3Bsegt%3D%E5%8D%95%E7%A8%8B%3Btime%3D2021-05-21%3B%E5%8D%97%E4%BA%AC-%E6%98%86%E6%98%8E%3B1%2C0%2C0%3B00%3B%26cou%3D5%3Bsegt%3D%E5%8D%95%E7%A8%8B%3Btime%3D2021-05-20%3B%E8%A5%BF%E5%AE%89-%E4%B8%8A%E6%B5%B7%3B1%2C0%2C0%3B00%3B%26cou%3D5%3Bsegt%3D%E5%8D%95%E7%A8%8B%3Btime%3D2021-05-21%3B%E5%8E%A6%E9%97%A8-%E6%B5%8E%E5%8D%97%3B1%2C0%2C0%3B00%3B%26',
-#             'ticketBoolingSearch': '%7B%22segType%22%3A%22S%22%2C%22adultNum%22%3A%221%22%2C%22childNum%22%3A%220%22%2C%22infantNum%22%3A%220%22%2C%22citys%22%3A%5B%7B%22id%22%3A%22single-formCity%22%2C%22value%22%3A%22%E5%8E%A6%E9%97%A8%22%7D%2C%7B%22id%22%3A%22single-formCityCode%22%2C%22value%22%3A%22XMN%22%7D%2C%7B%22id%22%3A%22isdepair%22%2C%22value%22%3Afalse%7D%2C%7B%22id%22%3A%22single-toCity%22%2C%22value%22%3A%22%E6%B5%8E%E5%8D%97%22%7D%2C%7B%22id%22%3A%22single-toCityCode%22%2C%22value%22%3A%22TNA%22%7D%2C%7B%22id%22%3A%22isarrair%22%2C%22value%22%3Afalse%7D%5D%2C%22dates%22%3A%5B%7B%22id%22%3A%22single-formCalender%22%2C%22value%22%3A%222021-05-21%22%2C%22minDate%22%3A%22%2B0d%22%7D%5D%7D',
-#             'WT-FPC': 'id=222.175.103.33-2839966592.30871748:lv=1619056561017:ss=1619055584502:fs=1614841486574:pn=7:vn=11',
-#             'likev_session_etm_8mrmut7r76ntg21b': '1619056561024',
-#             'acw_tc': '2f6a1f8416203906439045955e5e01944640b156aa1aed00f8187a23165ee1',
-#             'ssxmod_itna': 'QqUO0KiIeGxAgBDzgD2YL39DmqdSm0pY=Qax0HPi=bDSxGKidDqxBmmjqDtQb=oF275xW45G2hqKAl0jb+3Mi6C8+xf/Gg4GIDeKG2DmeDyDi5GRD0KKbpTLKD3Dm4i3DDxiaDi4DryxBYDmudDGqKDbqQDIMUqKGEyFMURDqDH3hoYp0ve9EeW++DKeOvz/nuz4hAaUAxTp8Pt8Pqt664DG8DmlE4xD',
-#             'ssxmod_itna2': 'QqUO0KiIeGxAgBDzgD2YL39DmqdSm0pY=BDn9Eqi=CDl1GDjbcfQMMx6/hMD6q8Ql6T9DHoD3MaR3emxD5HQAxPBnfK29iKh6Wp4ApGaj39FPtr1PFy4hjaVUHB3WgU+6cQdOkXAHh658aeviRmH7farPZayNQ9ps=rcdcrB8cPmtxKEt+arb9iysoOEaVnoaVCS=bFHwVD3a=48i902oDQ9iDjKD+2GDD==',
-#             'language': 'zh_CN',
-#             'WT.al_flight': 'WT.al_hctype(S)%3AWT.al_adultnum(1)%3AWT.al_childnum(0)%3AWT.al_infantnum(0)%3AWT.al_orgcity1(BJS)%3AWT.al_dstcity1(SHA)%3AWT.al_orgdate1(2021-05-20)',
-#             'acw_sc__v2': '609532f5342955e58f02a3dadfcd2e3053917892',
-#         }
-#
-#         headers = {
-#             'Connection': 'keep-alive',
-#             'Pragma': 'no-cache',
-#             'Cache-Control': 'no-cache',
-#             'sec-ch-ua': '"Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"',
-#             'Accept': 'application/json, text/javascript, */*; q=0.01',
-#             'X-Requested-With': 'XMLHttpRequest',
-#             'sec-ch-ua-mobile': '?0',
-#             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
-#             'Content-Type': 'application/json',
-#             'Origin': 'https://b2c.csair.com',
-#             'Sec-Fetch-Site': 'same-origin',
-#             'Sec-Fetch-Mode': 'cors',
-#             'Sec-Fetch-Dest': 'empty',
-#             'Referer': 'https://b2c.csair.com/B2C40/newTrips/static/main/page/booking/index.html?t=S&c1=BJS&c2=SHA&d1=2021-05-20&at=1&ct=0&it=0&b1=PEK-PKX&b2=SHA-PVG',
-#             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-#         }
-#
-#         data = '{' \
-#                '"depCity":"' + dep + '",' \
-#                                      '"arrCity":"' + arr + '",' \
-#                 '"flightDate":"' + day + '",' \
-#                                          '"adultNum":"1",' \
-#                                                                                     '"childNum":"0",' \
-#                                                                                     '"infantNum":"0",' \
-#                                                                                     '"cabinOrder":"0",' \
-#                                                                                     '"airLine":1,' \
-#                                                                                     '"flyType":0,' \
-#                                                                                     '"international":"0",' \
-#                                                                                     '"action":"0",' \
-#                                                                                     '"segType":"1",' \
-#                                                                                     '"cache":0,' \
-#                                                                                     '"preUrl":"",' \
-#                                                                                     '"isMember":""}'
-#
-#         response = requests.post('https://b2c.csair.com/portal/flight/direct/query', headers=headers, cookies=cookies,
-#                                  data=data)
-#
-#         print(response.status_code)
-#         # print(response.text)
-#
-#         jsdata = json.loads(response.text)['data']['segment'][0]
-#
-#         # if getCityID(json.loads(response.text)['data']['citys'][1]['zhName']) == arr:
-#         #     acity = json.loads(response.text)['data']['citys'][1]['zhName']
-#         #     dcity = json.loads(response.text)['data']['citys'][0]['zhName']
-#         # else:
-#         #     acity = json.loads(response.text)['data']['citys'][0]['zhName']
-#         #     dcity = json.loads(response.text)['data']['citys'][1]['zhName']
-#         for i in json.loads(response.text)['data']['citys']:
-#             if getCityID(i['zhName']) == dep:
-#                 dcity = i['zhName']
-#             if getCityID(i['zhName']) == arr:
-#                 acity = i['zhName']
-#
-#         # list = []
-#         company = '南方航空'
-#
-#         tzurl1 = 'https://b2c.csair.com/B2C40/newTrips/static/main/page/booking/index.html?' \
-#                  't=S' \
-#                  '&c1=BJS' \
-#                  '&c2=SHA' \
-#                  '&d1=' + dayBZ + \
-#                  '&at=1' \
-#                  '&ct=0' \
-#                  '&it=0' \
-#                  '&b1=PEK-PKX' \
-#                  '&b2=SHA-PVG'
-#
-#         tzurl2 = 'https://b2c.csair.com/B2C40/newTrips/static/main/page/booking/index.html?' \
-#                  't=S' \
-#                  '&c1=' + dep + \
-#                  '&c2=' + arr + \
-#                  '&d1=' + dayBZ + \
-#                  '&at=1' \
-#                  '&ct=0' \
-#                  '&it=0' \
-#                  '&b1=' + dep + \
-#                  '&b2=' + arr
-#
-#         tzurl3 = 'https://b2c.csair.com/B2C40/newTrips/static/main/page/booking/index.html?' \
-#                  't=S' \
-#                  '&c1=SHA' \
-#                  '&c2=BJS' \
-#                  '&d1=' + dayBZ + \
-#                  '&at=1' \
-#                  '&ct=0' \
-#                  '&it=0' \
-#                  '&b1=SHA-PVG' \
-#                  '&b2=PEK-PKX'
-#
-#         tzurl4 = 'https://b2c.csair.com/B2C40/newTrips/static/main/page/booking/index.html?' \
-#                  't=S' \
-#                  '&c1=BJS' \
-#                  '&c2=' + arr + \
-#                  '&d1=' + dayBZ + \
-#                  '&at=1' \
-#                  '&ct=0' \
-#                  '&it=0' \
-#                  '&b1=PEK-PKX' \
-#                  '&b2=' + arr
-#
-#         tzurl5 = 'https://b2c.csair.com/B2C40/newTrips/static/main/page/booking/index.html?' \
-#                  't=S' \
-#                  '&c1=SHA' \
-#                  '&c2=' + arr + \
-#                  '&d1=' + dayBZ + \
-#                  '&at=1' \
-#                  '&ct=0' \
-#                  '&it=0' \
-#                  '&b1=SHA-PVG' \
-#                  '&b2=' + arr
-#
-#         tzurl6 = 'https://b2c.csair.com/B2C40/newTrips/static/main/page/booking/index.html?' \
-#                  't=S' \
-#                  '&c1=' + dep + \
-#                  '&c2=SHA' \
-#                  '&d1=' + dayBZ + \
-#                  '&at=1' \
-#                  '&ct=0' \
-#                  '&it=0' \
-#                  '&b1=' + dep + \
-#                  '&b2=SHA-PVG'
-#
-#         tzurl7 = 'https://b2c.csair.com/B2C40/newTrips/static/main/page/booking/index.html?' \
-#                  't=S' \
-#                  '&c1=' + dep + \
-#                  '&c2=BJS' \
-#                  '&d1=' + dayBZ + \
-#                  '&at=1' \
-#                  '&ct=0' \
-#                  '&it=0' \
-#                  '&b1=' + dep + \
-#                  '&b2=PEK-PKX'
-#
-#         if (dep == 'PEK' or dep == 'PKX') and (arr == 'SHA' or arr == 'PVG'):
-#             tzurl = tzurl1
-#         elif (dep == 'SHA' or dep == 'PVG') and (arr == 'PEK' or arr == 'PKX'):
-#             tzurl = tzurl3
-#         elif dep == 'PEK' or dep == 'PKX':
-#             tzurl = tzurl4
-#         elif dep == 'SHA' or dep == 'PVG':
-#             tzurl = tzurl5
-#         elif arr == 'SHA' or arr == 'PVG':
-#             tzurl = tzurl6
-#         elif arr == 'PEK' or arr == 'PKX':
-#             tzurl = tzurl7
-#         else:
-#             tzurl = tzurl2
-#
-        # info = jsdata['dateFlight']['flight']
-        # for i in info:
-        #     date = i['arrDate']
-        #     flightID = i['flightNo']
-        #
-        #     atime = dayBZ + ' ' + i['arrTime'][:2] + ':' + i['arrTime'][2:] +':00'
-        #     dtime = dayBZ + ' ' + i['depTime'][:2] + ':' + i['depTime'][2:] +':00'
-        #     # print(atime)
-        #
-        #     cabin = i['cabin'][len(i['cabin']) - 1]['adultFareBasis']
-        #     price = i['cabin'][len(i['cabin']) - 1]['adultPrice']
-#
-#             listfordict.append({
-#                 'company': company,
-#                 'flightID': flightID,
-#                 'dCityName': dcity,
-#                 'aCityName': acity,
-#                 'date': date,
-#                 'dTime': dtime,
-#                 'aTime': atime,
-#                 'cabin': cabin,
-#                 'price': price,
-#                 'tzurl': tzurl
-#                          })
-#         print(company, flightID)
-#         print("南方航空搜索完成")
-#     except:
-#         print("南方航空报错或未查询到数据")
-#
-#     return listfordict
 
-def aokai(dep, arr, day):
-    '''
-
-    :param dep: 大写城市代码
-    :param arr: 大写城市代码
-    :param day: 2021-05-26
-    :return:
-    '''
-    try:
-        day1 = day[:4] + day[5:7] + day[8:]
-
-        cookies = {
-            'acw_tc': '65c86a0a16203841712926043ebd00c4942fd75783bb27e0bc439ec65dc986',
-            'A_JNID': '8a367336165a643ac48557293464edbf64beb880800eaa0b5bd8e',
-            'A_SSID': '16220c7b3ce7137c4186d0b29c57c8be',
-            'UM_distinctid': '179466c491682a-08683f65d69897-336a7c08-13c680-179466c4917b1a',
-            'CNZZDATA1277681476': '931279298-1620380120-%7C1620380120',
-            'currentCity': '%E6%B5%8E%E5%8D%97',
-            'currentCode': 'TNA',
-            'currentType': 'D',
-            'notice-read-ETweb': 'true',
-            'A_CKPC': 'IHiLpDtUtFm6vrfwpw5ynx5abJ25VEYxXbnp0RBjRAqB92ngrQpgQoEQ%2B3sWpHOr%2B0w89nX3RYd2Bc7TBgnG8g%3D%3D',
-        }
-
-        headers = {
-            'Connection': 'keep-alive',
-            'Pragma': 'no-cache',
-            'Cache-Control': 'no-cache',
-            'sec-ch-ua': '"Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"',
-            'Accept': 'application/json, text/plain, */*',
-            'sec-ch-ua-mobile': '?0',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
-            'Content-Type': 'application/json',
-            'Origin': 'https://www.okair.net',
-            'Sec-Fetch-Site': 'same-origin',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Dest': 'empty',
-            'Referer': 'https://www.okair.net/services.html',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        }
-
-        data = '{' \
-               '"org":"' + dep + '",' \
-                                 '"dst":"' + arr + '",' \
-                                                   '"fltDate":"' + day1 + '"' \
-                                                                          '}'
-
-        response = requests.post('https://www.okair.net/api/pub/queryFare', headers=headers, cookies=cookies, data=data)
-        print(response.status_code)
-
-        jdata = json.loads(response.text)['data']['avFltInfo']
-        # print(jdata)
-
-        company = "奥凯航空"
-        # listfordict = []
-        for item in jdata:
-            flightID = item['flightNoGroup']
-
-            i = item['segmentList'][0]
-
-            arrAirportInfo = i['arrAirportInfo']
-            acity = arrAirportInfo['airportLongName']
-            atime = i['arrTime']
-            atime = day + ' ' + atime[:2] + ':' + atime[2:] + ':00'
-            depAirportInfo = i['depAirportInfo']
-            dcity = depAirportInfo['airportLongName']
-            dtime = i['depTime']
-            dtime = day + ' ' + dtime[:2] + ':' + dtime[2:] + ':00'
-
-            avCabinInfo = i['avCabinInfo']
-            cabin = avCabinInfo[-2]['baseCabinName']
-            price = int(avCabinInfo[-2]['fdPrice']) + 50
-
-            tzurl = 'https://www.okair.net/welcome.html#/'
-
-            listfordict.append({'company': company,
-                                'flightID': flightID,
-                                'dCityName': dcity,
-                                'aCityName': acity,
-                                'date': day,
-                                'dTime': dtime,
-                                'aTime': atime,
-                                'cabin': cabin,
-                                'price': price,
-                                'tzurl': tzurl
-                                })
-
-            print("奥凯航空搜索完成")
-    except:
-        print("奥凯航空报错或未查询到数据")
-
-
-    # print(listfordict)
-
-
-
-
-
-
-def trans_format(time_string, from_format, to_format='%Y.%m.%d %H:%M:%S'):
-    """
-    @note 时间格式转化
-    :param time_string:
-    :param from_format:
-    :param to_format:
-    :return:
-    """
-    time_struct = time.strptime(time_string,from_format)
-    times = time.strftime(to_format, time_struct)
-    return times
 # depcityname = '广州'
 # arrcityname = '南京'
 # day = '2021-05-21'
@@ -1398,43 +1122,18 @@ def trans_format(time_string, from_format, to_format='%Y.%m.%d %H:%M:%S'):
 # print(listfordict)
 
 def search(depcode, arrcode, day):
-    '''
-    调用所有用城市码搜索的航空公司
-    :param depcode: 大写城市代码
-    :param arrcode: 大写城市代码
-    :param day: 2021-06-25
-    :return:
-    '''
     xiamen(day, depcode, arrcode)
     shandong(depcode, arrcode, day)
     shenzhen(depcode, arrcode, day)
     donghang(depcode, arrcode, day)
     nanhang(depcode, arrcode, day)
-    aokai(depcode, arrcode, day)
 
 
+def allsearch():
 
-
-@require_http_methods(["GET"])
-def allsearch(request):
-    response = {}
-    global listfordict
-    listfordict = []
-    depcityname = request.GET.get('departure')  # '北京大兴'
-    arrcityname = request.GET.get('destination')  # '广州'
-
-    day = trans_format(request.GET.get('goDate')[:15], '%a %b %d %Y', '%Y-%m-%d')[:10]  # '2021-05-21'
-
-    # depcode = getCityID(depcityname)
-    # arrcode = getCityID(arrcityname)
-    #
-    # xiamen(day, depcode, arrcode)
-    # shandong(depcode, arrcode, day)
-    # shenzhen(depcode, arrcode, day)
-    # donghang(depcode, arrcode, day)
-    # chunqiu(depcityname, arrcityname, day)
-    # nanhang(depcode, arrcode, day)
-    # aokai(depcode, arrcode, day)
+    depcityname = '成都'
+    arrcityname = '深圳'
+    day = '2021-05-21'
 
     if depcityname == '北京' or depcityname == '上海' or arrcityname == '北京' or arrcityname == '北京':
         if depcityname == '北京':
@@ -1500,12 +1199,8 @@ def allsearch(request):
         search(depcode, arrcode, day)
 
 
-    chunqiu(depcityname, arrcityname, day)
+    # chunqiu(depcityname, arrcityname, day)
 
     print(listfordict)
-    response = {"data" : listfordict}
 
-    return JsonResponse(response)
-
-# allsearch()
-
+allsearch()
