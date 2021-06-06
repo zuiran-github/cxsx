@@ -91,6 +91,8 @@ def aokai(dep, arr, day):
 
     print(listfordict)
 
+    return listfordict
+
 dep = 'CTU'
 arr = 'TSN'
 date = '2021-05-20'

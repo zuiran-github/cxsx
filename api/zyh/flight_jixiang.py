@@ -1,60 +1,6 @@
 import requests
 import json
-#
-# cookies = {
-#     'gr_user_id': 'c1705de4-048b-4ba0-959c-e93fa023c7ab',
-#     'c': 'flQgSOpS-1618916693630-0285756e309381847311526',
-#     'ASP.NET_SessionId': 'tzcxr5lwqoxzugwquyrukxcp',
-#     'b9d8f773fb7147ad_gr_session_id': '79bf73d5-9718-48c6-9e32-ddba2c5293a5',
-#     'b9d8f773fb7147ad_gr_session_id_79bf73d5-9718-48c6-9e32-ddba2c5293a5': 'true',
-#     'Hm_lvt_f1c672edeacdaef6cb2e00251b466246': '1618924152,1618977810,1619063082,1620446121',
-#     'TDpx': '1245',
-#     'QueryFlightCookie': 'depCity=SHA&arrCity=XIY&depCityName=\xE4\xB8\u0160\xE6\xB5\xB7&arrCityName=\xE8\xA5\xBF\xE5\xAE\u2030',
-#     'security_session_verify': '2510299b1c56b845809bd55796e6ef6c',
-#     'Hm_lpvt_f1c672edeacdaef6cb2e00251b466246': '1620446135',
-#     '_fmdata': 'sV4KIG8%2B0k4xMJQF9pOL2v4BaO8jNH9gRVsjpQtcOQt0qWARX0oB8%2BjYMO2WvCMYrknV7IHODIB0klx%2BvOhlgHnk3JmTPncArnR%2F6eZxNFY%3D',
-#     '_xid': 'Cq1C1ceTSTmqfMvIm26JGbTATe5fW5aARFph%2Bi8ePEcqzGsGM%2FbHHNlN1RiayO%2BY8K8fi4IicT9YM3kn6yJbuQ%3D%3D',
-# }
-#
-# headers = {
-#     'Connection': 'keep-alive',
-#     'Pragma': 'no-cache',
-#     'Cache-Control': 'no-cache',
-#     'Accept': 'application/json, text/javascript, */*; q=0.01',
-#     'X-Requested-With': 'XMLHttpRequest',
-#     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
-#     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-#     'Origin': 'http://www.juneyaoair.com',
-#     'Referer': 'http://www.juneyaoair.com/pages/Flight/flight.aspx?flightType=OW&sendCity=%E4%B8%8A%E6%B5%B7&sendCode=SHA&arrCity=%E8%A5%BF%E5%AE%89&arrCode=XIY&directType=N&tripType=D&departureDate=2021-06-28&returnDate=2021-06-28',
-#     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-# }
-#
-# params = (
-#     ('flightType', 'OW'),
-#     ('tripType', 'D'),
-#     ('directType', 'D'),
-#     ('departureDate', '2021-06-28'),
-#     ('sendCode', 'SHA'),
-#     ('arrCode', 'XIY'),
-#     ('returnDate', ''),
-# )
-#
-# data = {
-#   'blackbox': 'eyJ2IjoiKzgzY2FnREJIZFFwdHduMzhDQnQ2ZmVSUHNEK2ZwRGxLMGdzdWlJSEFXcDlZby92ZmdsSExxWDBJT2FzSnQzRCIsIm9zIjoid2ViIiwiaXQiOjQwMCwidCI6IkRnSHk1MXBham1OZVhGaDdiVVpiV0oycThITGhGK1ZrSloxQ0FLR05NSmd3US9TcERwejY3czN3MnlSWGR5R2RtNUtnbmVwVmFmWFNrODdWclFWVTVRPT0ifQ%3D%3D',
-#   'sendCity': '\u4E0A\u6D77',
-#   'arrCity': '\u897F\u5B89'
-# }
-#
-# data = json.dumps(data)
-#
-# # response = requests.post('http://www.juneyaoair.com/UnitOrderWebAPI/Book/QueryFlightFareNew', headers=headers, params=params, cookies=cookies, data=data, verify=False)
-#
-#
-# response = requests.post('http://www.juneyaoair.com/UnitOrderWebAPI/Book/QueryFlightFareNew?flightType=OW&tripType=D&directType=D&departureDate=2021-06-28&sendCode=SHA&arrCode=XIY&returnDate=', headers=headers, cookies=cookies, data=data, verify=False)
-#
-#
-# print(response.status_code)
-# print(response.text)
+
 
 listfordict = []
 def donghang(dep, arr, day):
@@ -188,4 +134,62 @@ def donghang(dep, arr, day):
     return listfordict
 
 donghang('SHA', 'PKX', '2021-05-26')
+
+#
+# cookies = {
+#     'gr_user_id': 'c1705de4-048b-4ba0-959c-e93fa023c7ab',
+#     'c': 'flQgSOpS-1618916693630-0285756e309381847311526',
+#     'ASP.NET_SessionId': 'tzcxr5lwqoxzugwquyrukxcp',
+#     'b9d8f773fb7147ad_gr_session_id': '79bf73d5-9718-48c6-9e32-ddba2c5293a5',
+#     'b9d8f773fb7147ad_gr_session_id_79bf73d5-9718-48c6-9e32-ddba2c5293a5': 'true',
+#     'Hm_lvt_f1c672edeacdaef6cb2e00251b466246': '1618924152,1618977810,1619063082,1620446121',
+#     'TDpx': '1245',
+#     'QueryFlightCookie': 'depCity=SHA&arrCity=XIY&depCityName=\xE4\xB8\u0160\xE6\xB5\xB7&arrCityName=\xE8\xA5\xBF\xE5\xAE\u2030',
+#     'security_session_verify': '2510299b1c56b845809bd55796e6ef6c',
+#     'Hm_lpvt_f1c672edeacdaef6cb2e00251b466246': '1620446135',
+#     '_fmdata': 'sV4KIG8%2B0k4xMJQF9pOL2v4BaO8jNH9gRVsjpQtcOQt0qWARX0oB8%2BjYMO2WvCMYrknV7IHODIB0klx%2BvOhlgHnk3JmTPncArnR%2F6eZxNFY%3D',
+#     '_xid': 'Cq1C1ceTSTmqfMvIm26JGbTATe5fW5aARFph%2Bi8ePEcqzGsGM%2FbHHNlN1RiayO%2BY8K8fi4IicT9YM3kn6yJbuQ%3D%3D',
+# }
+#
+# headers = {
+#     'Connection': 'keep-alive',
+#     'Pragma': 'no-cache',
+#     'Cache-Control': 'no-cache',
+#     'Accept': 'application/json, text/javascript, */*; q=0.01',
+#     'X-Requested-With': 'XMLHttpRequest',
+#     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
+#     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+#     'Origin': 'http://www.juneyaoair.com',
+#     'Referer': 'http://www.juneyaoair.com/pages/Flight/flight.aspx?flightType=OW&sendCity=%E4%B8%8A%E6%B5%B7&sendCode=SHA&arrCity=%E8%A5%BF%E5%AE%89&arrCode=XIY&directType=N&tripType=D&departureDate=2021-06-28&returnDate=2021-06-28',
+#     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+# }
+#
+# params = (
+#     ('flightType', 'OW'),
+#     ('tripType', 'D'),
+#     ('directType', 'D'),
+#     ('departureDate', '2021-06-28'),
+#     ('sendCode', 'SHA'),
+#     ('arrCode', 'XIY'),
+#     ('returnDate', ''),
+# )
+#
+# data = {
+#   'blackbox': 'eyJ2IjoiKzgzY2FnREJIZFFwdHduMzhDQnQ2ZmVSUHNEK2ZwRGxLMGdzdWlJSEFXcDlZby92ZmdsSExxWDBJT2FzSnQzRCIsIm9zIjoid2ViIiwiaXQiOjQwMCwidCI6IkRnSHk1MXBham1OZVhGaDdiVVpiV0oycThITGhGK1ZrSloxQ0FLR05NSmd3US9TcERwejY3czN3MnlSWGR5R2RtNUtnbmVwVmFmWFNrODdWclFWVTVRPT0ifQ%3D%3D',
+#   'sendCity': '\u4E0A\u6D77',
+#   'arrCity': '\u897F\u5B89'
+# }
+#
+# data = json.dumps(data)
+#
+# # response = requests.post('http://www.juneyaoair.com/UnitOrderWebAPI/Book/QueryFlightFareNew', headers=headers, params=params, cookies=cookies, data=data, verify=False)
+#
+#
+# response = requests.post('http://www.juneyaoair.com/UnitOrderWebAPI/Book/QueryFlightFareNew?flightType=OW&tripType=D&directType=D&departureDate=2021-06-28&sendCode=SHA&arrCode=XIY&returnDate=', headers=headers, cookies=cookies, data=data, verify=False)
+#
+#
+# print(response.status_code)
+# print(response.text)
+
+
 
