@@ -24,6 +24,7 @@
                 <webs
                   v-for="web in webs"
                   :key="web.index"
+                  :name="name"
                   :website="web.website"
                   :distance="web.distance"
                   :score="web.score"
@@ -75,6 +76,9 @@ export default {
     scenics:{
       default:[]
     },
+    scenicandaddress:{
+      default:[]
+    },
     oneScenic:{
       default:true
     },
@@ -103,6 +107,7 @@ export default {
             //query/
             query: {
               scenics: this.scenics,
+              scenicandaddress:this.scenicandaddress,
               hotelname: this.name,
               city: this.city,
               oneScenic:this.oneScenic,

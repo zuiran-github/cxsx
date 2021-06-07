@@ -25,7 +25,8 @@
               <el-row>
               <el-col :offset="2">
                 <div class="rank">
-                  <el-tag effect="dark" size="mini">{{rank+"分"}}</el-tag>
+                  <el-tag effect="dark" size="mini" v-if="hasRank" class="tags">{{"第"+rank+"名"}}</el-tag>
+                  <el-tag effect="dark" size="mini" v-if="hasScore" class="tags">{{score+"分"}}</el-tag>
                   </div>
               </el-col>
             </el-row>
@@ -37,23 +38,6 @@
                   </div>
               </el-col>
             </el-row>
-            <!-- <el-row>
-              <el-col :offset="2">
-                <div class="des">
-                  <el-button size="mini" :type="buttontype" round @click="exchange" :plain="isClick">{{choose}}</el-button>
-                </div>
-              </el-col>
-            </el-row> -->
-          <!-- <el-row>
-          <el-col :span="18" :offset="3">
-            <div class="des">景点介绍</div>
-          </el-col>
-          </el-row>
-          <el-row>
-          <el-col :span="18" :offset="3">
-            <div class="content">{{description}}</div>
-          </el-col>
-          </el-row> -->
         </div>
       </div>
     </div>
@@ -78,7 +62,10 @@ export default {
     return {
       loading:false,
       imgsrc: "",
-      rank: "暂无评分",
+      rank: "",
+      score:"",
+      hasRank:false,
+      hasScore:false,
       description: "加载中",
       shadow: "hover",
       isClick: false,
@@ -99,6 +86,7 @@ export default {
       }
     },
     getInfos() {
+      this.loading=true;
       this.$axios({
         method: "get",
         url: "http://127.0.0.1:8000/api/getSpotsInfo",
@@ -116,6 +104,13 @@ export default {
           } else {
             this.imgsrc = array.imgsrc;
             this.rank = array.rank;
+            this.score = array.score;
+    if(this.rank&&this.rank!=0){
+      this.hasRank=true;
+    }
+    if(this.score&&this.score!="0.0"){
+      this.hasScore=true;
+    }
             this.description = array.description;
           }
         })
@@ -123,6 +118,10 @@ export default {
           // alert("出错了！");
         });
     },
+
+  },
+  watch:{
+    address:'getInfos'
   },
   mounted() {
     this.loading=true;
@@ -187,6 +186,9 @@ export default {
   margin-top: 1%;
   text-align: left;
   color: rgba(46, 45, 45, 0.815);
+}
+.tags{
+  margin-left: 3px;
 }
 .des {
   margin-top: 2%;

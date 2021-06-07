@@ -80,6 +80,7 @@ export default {
         city:"",
         hotelname:"",
         scenics:[],
+      scenicandaddress:[],
         oneScenic:false,
         firstScenic:"",
       loading:false,
@@ -128,7 +129,7 @@ export default {
         params: {
           city: this.city,
           hotelname: this.hotelname,
-          scenic:this.scenics,
+          scenic:this.scenicandaddress,
         },
       })
         .then((res) => {
@@ -141,7 +142,7 @@ export default {
             this.paths=array.paths;
             this.center=array.center;
             // this.positions=array.position;
-            this.positions = array.position.map((item) => {
+            this.positions = array.positions.map((item) => {
       return { position: item.position, lnglat: {lng:item.lng,lat:item.lat} };
     });
           }
@@ -163,6 +164,7 @@ export default {
     this.city=this.$route.query.city;
     this.oneScenic=this.$route.query.oneScenic;
     this.firstScenic=this.$route.query.firstScenic;
+    this.scenicandaddress=this.$route.query.scenicandaddress;
     console.log(this.oneScenic);
     if(this.oneScenic=="true"){
       this.scenics.push(this.firstScenic);

@@ -37,6 +37,9 @@
 <script>
 export default {
   props: {
+    name:{
+      default:"",
+    },
     website: {
       default: "暂无来源",
     },
@@ -64,13 +67,29 @@ export default {
   },
   data() {
     return {
-      imgsrc: "bg22",
       rank:"",
       shadow: "hover",
     };
   },
   methods: {
       jump() {
+        this.$axios({
+        method: "get",
+        url: "http://127.0.0.1:8000/api/dianjifanhui",
+        params: {
+          hotelname:this.name,
+          distance:this.distance,
+          score:this.score,
+          comments:this.comments,
+          price:this.price,
+        },
+      })
+        .then((res) => {
+        })
+        .catch((res) => {
+          console.table(res);
+          alert("出错了！！");
+        });
       window.open(this.link);
     },
   },

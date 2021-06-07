@@ -342,6 +342,7 @@ export default {
                   this.noScenic = true;
                 } else {
                   this.scenics = [];
+                  this.$forceUpdate();
                   this.hasScenics = true;
                   this.noScenic = false;
                   array.forEach((item, index, array) => {

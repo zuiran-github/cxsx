@@ -89,7 +89,7 @@
           :key="hotel.name"
           class="list-item"
         >
-          <hotel :name="hotel.name" :webs="hotel.web" :scenics="params.scenics" :city="city" :imgsrc="hotel.picture" :oneScenic="oneScenic" :firstScenic="firstScenic"> </hotel>
+          <hotel :name="hotel.name" :webs="hotel.web" :scenics="params.scenics" :city="city" :imgsrc="hotel.picture" :scenicandaddress="scenicandaddress" :oneScenic="oneScenic" :firstScenic="firstScenic"> </hotel>
         </li>
       </ul>
       <ul
@@ -107,7 +107,7 @@
         <span class="resulttitle">{{"第"+(index+1)+"组搜索结果(点击以展开/收起)"}}</span>
             </div>
           <div class="results" v-if="nowopen==index">
-          <hotel v-for="hotel in ahotel" :key="hotel.index" :name="hotel.name" :webs="hotel.web" :scenics="params.scenics" :city="city" :imgsrc="hotel.picture" :oneScenic="oneScenic" :firstScenic="firstScenic" class="hotel"> </hotel>
+          <hotel v-for="hotel in ahotel" :key="hotel.index" :name="hotel.name" :webs="hotel.web" :scenics="params.scenics" :scenicandaddress="scenicandaddress" :city="city" :imgsrc="hotel.picture" :oneScenic="oneScenic" :firstScenic="firstScenic" class="hotel"> </hotel>
           <span class="notion">&nbsp;</span>
           </div>
         </li>
