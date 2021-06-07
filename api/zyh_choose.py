@@ -3,6 +3,12 @@ from django.views.decorators.http import require_http_methods
 import json
 
 def train_choose(kind, traininfo):
+    '''
+    单个类型筛选
+    :param kind:  'G', 'D', 'K', 'T', 'Z', 'O'
+    :param traininfo: 火车信息[]
+    :return: []
+    '''
 
     listfordict = []
 
@@ -24,6 +30,12 @@ def train_choose(kind, traininfo):
 
 
 def train_finish_choose(kinds, traininfo):
+    '''
+    多个类型筛选
+    :param kinds: 类型[]
+    :param traininfo: 火车票[]
+    :return: []
+    '''
 
     listfordict = []
 
@@ -37,6 +49,11 @@ def train_finish_choose(kinds, traininfo):
 
 @require_http_methods(["GET"])
 def zyh_choose_train(request):
+    '''
+    前端调用，根据火车的类型进行筛选
+    :param request:
+    :return:
+    '''
 
     # print(type(request.GET))
     trainlist1 = request.GET.getlist('train[]')  # 获取字典列表进行筛选

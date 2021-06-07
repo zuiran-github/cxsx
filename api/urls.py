@@ -39,6 +39,8 @@ urlpatterns = [
     url(r"pricedescend$", qxw_price_descend, ),  # 价格降序
     url(r"priceascend$", qxw_price_ascend, ),  # 价格升序
     url(r"pathplan$", qxw_path, ),  # 路径规划
+    url(r"dianjifanhui$", qxw_dianji, ),  # 点击返回信息
+
 
 
 

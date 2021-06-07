@@ -6,8 +6,6 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 import time
 
-
-
 def city_id():
     """
     获取城市站台对应代号并保存到本地

@@ -2,10 +2,13 @@ import requests
 import json
 import time
 from django.views.decorators.http import require_http_methods
-
+from .agentIP import *
 from django.http import JsonResponse
+from .flight_xibu import *
 
 listfordict = []
+
+proxy = get_proxy()
 
 
 def getCityID(cityname):
@@ -102,7 +105,7 @@ def xiamen(date, departure, arrival):
         }
 
         jdata = json.dumps(data1)
-        r = requests.post(url, data=jdata, headers=headers)
+        r = requests.post(url, data=jdata, headers=headers, proxies=proxy)
         print(r.status_code)
 
         ptemp = departure + '-' + arrival
@@ -249,7 +252,7 @@ def getURL(dep, arr, date):
 
         # jsdata = json.dumps(data)
 
-        r = requests.post(url=url, json=data, headers=headers)
+        r = requests.post(url=url, json=data, headers=headers, proxies=proxy)
         print(r.status_code)
         # print(r.text)
 
@@ -303,7 +306,7 @@ def shandong(dep, arr, day1):
         }
 
         # r = requests.post(url=url, data=jsdata, headers=headers)
-        r = requests.get(url=url, headers=headers)
+        r = requests.get(url=url, headers=headers, proxies=proxy)
         print(r.status_code)
         # print(r.text)
 
@@ -425,7 +428,7 @@ def shenzhen(depcode, arrcode, day):
         }
 
         response = requests.post('http://www.shenzhenair.com/szair_B2C/flightSearch.action', headers=headers,
-                                 cookies=cookies, data=data, verify=False)
+                                 cookies=cookies, data=data, verify=False, proxies=proxy)
 
         print(response.status_code)
         # print(response.text)
@@ -555,7 +558,7 @@ def donghang(dep, arr, day):
                "&arrCode=" + arr + \
                "&returnDate="
 
-        r = requests.post(url=url, data=data, headers=headers)
+        r = requests.post(url=url, data=data, headers=headers, proxies=proxy)
         print(r.status_code)
         # print(type(r.text))
         jsdata = json.loads(r.text)['FlightInfoList']
@@ -736,7 +739,7 @@ def chunqiu(dep, arr, day):
         }
 
         response = requests.post('https://flights.ch.com/Flights/SearchByTime', headers=headers, cookies=cookies,
-                                 data=data)
+                                 data=data, proxies=proxy)
         print(response.status_code)
 
         cabindict = {
@@ -906,7 +909,7 @@ def nanhang(dep, arr, dayBZ):
                                                                                     '"isMember":""}'
 
         response = requests.post('https://b2c.csair.com/portal/flight/direct/query', headers=headers, cookies=cookies,
-                                 data=data)
+                                 data=data, proxies=proxy)
 
         print(response.status_code)
         # print(response.text)
@@ -1312,7 +1315,7 @@ def aokai(dep, arr, day):
                                                    '"fltDate":"' + day1 + '"' \
                                                                           '}'
 
-        response = requests.post('https://www.okair.net/api/pub/queryFare', headers=headers, cookies=cookies, data=data)
+        response = requests.post('https://www.okair.net/api/pub/queryFare', headers=headers, cookies=cookies, data=data, proxies=proxy)
         print(response.status_code)
 
         jdata = json.loads(response.text)['data']['avFltInfo']
@@ -1406,18 +1409,43 @@ def search(depcode, arrcode, day):
     :param day: 2021-06-25
     :return:
     '''
-    xiamen(day, depcode, arrcode)
-    shandong(depcode, arrcode, day)
-    shenzhen(depcode, arrcode, day)
-    donghang(depcode, arrcode, day)
-    nanhang(depcode, arrcode, day)
-    aokai(depcode, arrcode, day)
+
+    from threading import Thread
+
+    t1 = Thread(target=xiamen, args=(day, depcode, arrcode))
+    t2 = Thread(target=shandong, args=(depcode, arrcode, day))
+    t3 = Thread(target=shenzhen, args=(depcode, arrcode, day))
+    t4 = Thread(target=donghang, args=(depcode, arrcode, day))
+    t5 = Thread(target=nanhang, args=(depcode, arrcode, day))
+    t6 = Thread(target=aokai, args=(depcode, arrcode, day))
+    t7 = Thread(target=xibu, args=(depcode, arrcode, day))
+
+    t1.start()
+    t2.start()
+    t3.start()
+    t4.start()
+    t5.start()
+    t6.start()
+    t7.start()
+
+
+    # xiamen(day, depcode, arrcode)
+    # shandong(depcode, arrcode, day)
+    # shenzhen(depcode, arrcode, day)
+    # donghang(depcode, arrcode, day)
+    # nanhang(depcode, arrcode, day)
+    # aokai(depcode, arrcode, day)
 
 
 
 
 @require_http_methods(["GET"])
 def allsearch(request):
+    '''
+    获取所有机票信息
+    :param request:
+    :return:
+    '''
     response = {}
     global listfordict
     listfordict = []
@@ -1508,4 +1536,4 @@ def allsearch(request):
 
     return JsonResponse(response)
 
-allsearch()
+# allsearch()

@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import my_fake_useragent as mfu
 import json
 import re
+import time
 from fuzzywuzzy import process
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
@@ -105,13 +106,17 @@ def getInfo(request):
     # global file
     try:
         filename = '/Users/zuiran/Documents/大三下/创新实训/proj4/api/yule/allScenic.json'
+        t0=time.time()
         with open(filename, 'r') as file:
             # file.encoding = 'gbk'
             # files = file.read()
             # files.encode('gbk')
             list = json.load(file)
+            t1=time.time()
+            print(t1-t0)
             # print(list)
             # print(len(list))
+            city = city.replace('市','')
             result = process.extractBests(city, list.keys(), score_cutoff=80, limit=1)
             result1 = process.extractBests(name, list[result[0][0]].keys(), score_cutoff=80, limit=1)
             info = list[result[0][0]][result1[0][0]]

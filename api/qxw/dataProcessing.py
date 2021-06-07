@@ -2,6 +2,7 @@ from .distance import *
 from pypinyin import lazy_pinyin
 import re
 import time
+from .LR import *
 import os
 import json
 import requests
@@ -10,22 +11,74 @@ import requests
 '''
 import pymysql
 
-#获取反馈数据
+#获取训练数据
+def load_data():
+    sql_data='select * from lr_data'
+    cursor.execute(sql_data)
+    results_data=cursor.fetchall()      #此处数据形式为[id,hotel_name,time,distance,score,comments,price]
+    train_data_x=[]
+    train_data_y=[]
+    for row in results_data:
+        train_data_x.append([row[3],row[4],row[5],row[6]])
+        train_data_y.append(1)
+    sql_unclick='select * from distance where hotel not in(select hotel_name from lr_data)'
+    cursor.execute(sql_unclick)
+    results_unclick=cursor.fetchall()
+    for row in results_unclick:
+        i=0
+        train_data_x.append([row[2],row[3],row[4],row[5]])
+        train_data_y.append(0)
+        i=i+1
+        if(i>20):
+            break
+    return train_data_x,train_data_y
+
 #计算逻辑回归模型的权重
 #将计算出来的权重存入数据库
 def update_weights(weights):
-    values=(weights[0],weights[1],weights[3],weights[4])
-    sql_lr="update lrweights set weight_1=%s,weight_2=%s,weight_3=%s,weight_4=%s"
+    nowtime=int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+    values=(weights[0],weights[1],weights[3],weights[4],nowtime)
+    sql_lr="update lrweights set weight_1=%s,weight_2=%s,weight_3=%s,weight_4=%s,train_time=%s"
     cursor.execute(sql_lr,values)
     db.commit()
 
 #从数据库中获取逻辑回归模型权重
 def get_weights():
     sql_LR="select * from lrweights"
-    print(sql_LR)
     cursor.execute(sql_LR)
     weights=cursor.fetchone()
     return weights
+
+#将从前端获取的用户点击行为存入数据库
+#每点击一次，存储一次，存储的数据为[id,hotel_name,time],time为存储时间
+#id每十分钟更新一次，从0开始，递增
+def qxw_clicks_saving(hotel_name,distance,score,comments,price):
+    #先搜索出当前id下的最早时间
+    sql_temp='select max(id_data),min(time) from lr_data'
+    cursor.execute(sql_temp)
+    result_data=cursor.fetchone()
+    time_early=result_data[1]
+    id=result_data[0]
+    #获取当前时间前十分钟
+    time_1=int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+    time_2=int(time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()-600)))
+    #如果当前ID最早时间早于当前时间前十分钟，id+1
+    #否则仍然使用当前id
+    if(time_early<time_2):
+        id=id+1
+    values=(id,hotel_name,time_1,distance,score,comments,price)
+    sql_click='insert into lr_data (id_data,hotel_name,time,distance,score,comments,price) values (%s,%s,%s,%s,%s,%s,%s)'
+    cursor.execute(sql_click,values)
+    db.commit()
+
+    #搜索出上次训练时间
+    sql_train='select max(train_time) from lrweights'
+    cursor.execute(sql_train)
+    last_train_time=cursor.fetchone()
+    #若距离上次训练时间已经过去了十分钟，则再次训练
+    if(last_train_time<time_2):
+        x,y=load_data()
+        LR(x,y)
 
 #去哪儿
 def getCityName(city):
@@ -165,6 +218,13 @@ def get_distanceFromDB_1(position,type):
 #可以随时改变输出数量
 def output(hotels,group,city,checkintime,checkouttime):
     output_number=20
+    if(city=='上海'):
+        sql_1 = "select * from hotel_web where Hotel_name=%s and Web_name=%s"
+    elif(city=='济南'):
+        sql_1 = "select * from hotel_jinan where Hotel_name=%s and Web_name=%s"
+    else:
+        sql_1 = "select * from hotel_beijin where Hotel_name=%s and Web_name=%s"
+
     #不分组
     if(group==0):
         results=[0 for i in range(output_number)]
@@ -172,7 +232,7 @@ def output(hotels,group,city,checkintime,checkouttime):
             #可能会出现部分酒店在这五个网站中不同时出现，此时判断结果是否为空，若为空，则结果集不为空，但是返回数据均为空
             results[i]=[]
             results[i].append(hotels[i][0])
-            sql_1="select * from hotel_web where Hotel_name=%s and Web_name=%s"
+            # sql_1="select * from hotel_web where Hotel_name=%s and Web_name=%s"
             values_1=(hotels[i][0],'去哪儿')
             cursor.execute(sql_1,values_1)
             results_1=cursor.fetchone()
@@ -223,7 +283,7 @@ def output(hotels,group,city,checkintime,checkouttime):
                               web_2,
                               web_3,
                               web_5])
-            results[i].append(results_1[7])
+            results[i].append(results_2[7])
         return results
     else:
         results=[0 for i in range(group)]
@@ -233,7 +293,7 @@ def output(hotels,group,city,checkintime,checkouttime):
                 # 可能会出现部分酒店在这五个网站中不同时出现，此时判断结果是否为空，若为空，则结果集不为空，但是返回数据均为空
                 results[k][i] = []
                 results[k][i].append(hotels[k][i][0])
-                sql_1 = "select * from hotel_web where Hotel_name=%s and Web_name=%s"
+                # sql_1 = "select * from hotel_web where Hotel_name=%s and Web_name=%s"
                 values_1 = (hotels[k][i][0], '去哪儿')
                 cursor.execute(sql_1, values_1)
                 results_1 = cursor.fetchone()

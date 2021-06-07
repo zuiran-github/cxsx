@@ -87,6 +87,7 @@ def getchepiaoinfo(city_id_dict, start, end, time):
         'leftTicketDTO.to_station': city_id_dict[ts],
         'purpose_codes': 'ADULT',
     }
+
     headers = {
         'Accept': '*/*',
         'Accept-Encoding': 'gzip, deflate, br',
@@ -245,6 +246,11 @@ def trans_format(time_string, from_format, to_format='%Y.%m.%d %H:%M:%S'):
 
 @require_http_methods(["GET"])
 def zyh_getTrainTicket(request):
+    '''
+    前端调用，获取所有火车票信息
+    :param request:
+    :return:
+    '''
     # response = {}
 
     depcityname = request.GET.get('departure')  # '北京'

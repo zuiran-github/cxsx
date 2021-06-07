@@ -126,7 +126,6 @@ def zyh_sortByCompany(request):
 
 
 
-
 @require_http_methods(["GET"])
 def zyh_sortByPrice(request):
 

@@ -137,12 +137,14 @@ def getTZURL(dep, arr, acity, dcity, day, airlineCode):
             arrXM = getCityID(acity[:4])
             arrHB = 'PKX'
             arrSD = 'pek'
+            arrLH = 'PKX'
 
         if dep == 'BJS':
             depJX = 'PEK'
             depXM = getCityID(dcity[:4])
             depHB = 'PKX'
             depSD = 'pek'
+            depLH = 'PKX'
 
         acityname = getCityName(arr)
         dcityname = getCityName(dep)
@@ -615,7 +617,6 @@ def trans_format(time_string, from_format, to_format='%Y.%m.%d %H:%M:%S'):
     time_struct = time.strptime(time_string,from_format)
     times = time.strftime(to_format, time_struct)
     return times
-
 
 
 
@@ -2009,6 +2010,11 @@ def test():
 
 @require_http_methods(["GET"])
 def allsearch(request):
+    '''
+    获取所有机票信息
+    :param request:
+    :return:
+    '''
     # response = {}
     global listfordict
     listfordict = []

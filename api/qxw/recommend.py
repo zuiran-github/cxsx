@@ -175,7 +175,7 @@ def multiple_locations_days(city,place,checkin_time,checkout_time,weights,type):
     else:
         #计算每个地点之间的相互距离，得到距离矩阵
         #判断是否有两个地点相隔较远，目前以12km为界限，后续考虑更新方法
-        maximum=20
+        maximum=25
         divide=False
         far=[]
         place_distance=[[0 for k in range(len(place))] for k in range(len(place))]

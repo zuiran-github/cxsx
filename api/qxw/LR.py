@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from .dataProcessing import update_weights
+from .dataProcessing import *
 import math
 '''
 由于初始数据量较少，故使用逻辑回归模型对用户的点击情况进行反馈从而拟合用户的喜好

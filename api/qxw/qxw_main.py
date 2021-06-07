@@ -44,33 +44,40 @@ import json
 """
 #默认调用方法
 def qxw_jiudian(city,places,checkin_time,checkout_time,type):
-    #逻辑回归模型参数经过迭代计算，参数权重大小已经存放在数据库中
-    weights=get_weights()
+    try:
+        #逻辑回归模型参数经过迭代计算，参数权重大小已经存放在数据库中
+        weights=get_weights()
 
-    #去的地方只有一个，使用基础推荐算法，并传出json数据
-    if(len(places)==1):
-        place=places[0]
-        #返回结果形式为：[酒店名称，距离，评分，评论，价格，类型，地点，综合评分]
-        # return basic_recommend(city,places,checkin_time,checkout_time,weights)
-        # print(type(python_to_json(output(basic_recommend(city,place,checkin_time,checkout_time,weights,type),
-        #                 0,city,checkin_time,checkout_time),0)))
-        # dict = {}
-        dict = python_to_json(output(basic_recommend(city,place,checkin_time,checkout_time,weights,type),
-                       0,city,checkin_time,checkout_time),0)
-        # dict = json.dumps(dict)
-        # print(type(dict))
-        return dict#python_to_json(output(basic_recommend(city,place,checkin_time,checkout_time,weights,type),
-                       # 0,city,checkin_time,checkout_time),0)
+        #去的地方只有一个，使用基础推荐算法，并传出json数据
+        if(len(places)==1):
+            place=places[0]
+            #返回结果形式为：[酒店名称，距离，评分，评论，价格，类型，地点，综合评分]
+            # return basic_recommend(city,places,checkin_time,checkout_time,weights)
+            # print(type(python_to_json(output(basic_recommend(city,place,checkin_time,checkout_time,weights,type),
+            #                 0,city,checkin_time,checkout_time),0)))
+            # dict = {}
+            dict = python_to_json(output(basic_recommend(city,place,checkin_time,checkout_time,weights,type),
+                           0,city,checkin_time,checkout_time),0)
+            # dict = json.dumps(dict)
+            # print(type(dict))
+            return dict#python_to_json(output(basic_recommend(city,place,checkin_time,checkout_time,weights,type),
+                           # 0,city,checkin_time,checkout_time),0)
 
-    #否则采用多地点推荐法，并传出json形式数据
-    else:
-        # 返回形式为：[酒店名称，距离，评分，评论，价格，类型，地点，综合评分]
-        # return multiple_locations_days(city,places,checkin_time,checkout_time,weights)
-        temp=multiple_locations_days(city,places,checkin_time,checkout_time,weights,type)
-        group=0
-        if(len(temp)<5):
-            group=len(temp)
-        return python_to_json(output(temp,group,city,checkin_time,checkout_time),group)
+        #否则采用多地点推荐法，并传出json形式数据
+        else:
+            # 返回形式为：[酒店名称，距离，评分，评论，价格，类型，地点，综合评分]
+            # return multiple_locations_days(city,places,checkin_time,checkout_time,weights)
+            temp=multiple_locations_days(city,places,checkin_time,checkout_time,weights,type)
+            group=0
+            if(len(temp)<5):
+                group=len(temp)
+            return python_to_json(output(temp,group,city,checkin_time,checkout_time),group)
+    except Exception as e:
+        print(e)
+        error_result={}
+        error_result['type']=2
+        error_result['data']=[]
+        return error_result
 
 #距离升序调用方法
 #该方法只适用于景点数为1的情况
@@ -85,11 +92,18 @@ def qxw_distance_output(city,places,checkin_time,checkout_time,type):
     #先得到所有酒店
     #先从距离表中获取该地点到所有酒店的距离
     #形式为[酒店名称，距离，评分，评论数，价格，类型,地点]
-    all_hotels=get_distanceFromDB_1(place,type)
-    hotels=sort_distance(all_hotels)
-    results=output(hotels,0,city,checkin_time,checkout_time)
-    # print(python_to_json(results,0))
-    return python_to_json(results,0)
+    try:
+        all_hotels=get_distanceFromDB_1(place,type)
+        hotels=sort_distance(all_hotels)
+        results=output(hotels,0,city,checkin_time,checkout_time)
+        # print(python_to_json(results,0))
+        return python_to_json(results,0)
+    except Exception as e:
+        print(e)
+        error_result={}
+        error_result['type']=2
+        error_result['data']=[]
+        return error_result
 
 #评分降序调用方法
 #该方法只适用于景点数为1的情况
@@ -98,10 +112,17 @@ def qxw_score_output(city,places,checkin_time,checkout_time,type):
     #先得到所有酒店
     #先从距离表中获取该地点到所有酒店的距离
     #形式为[酒店名称，距离，评分，评论数，价格，类型，地点]
-    all_hotels=get_distanceFromDB_1(place,type)
-    hotels=sort_points(all_hotels)
-    results=output(hotels,0,city,checkin_time,checkout_time)
-    return python_to_json(results,0)
+    try:
+        all_hotels=get_distanceFromDB_1(place,type)
+        hotels=sort_points(all_hotels)
+        results=output(hotels,0,city,checkin_time,checkout_time)
+        return python_to_json(results,0)
+    except Exception as e:
+        print(e)
+        error_result={}
+        error_result['type']=2
+        error_result['data']=[]
+        return error_result
 
 #评论数降序调用方法
 #该方法只适用于景点数为1的情况
@@ -110,10 +131,17 @@ def qxw_commends_output(city,places,checkin_time,checkout_time,type):
     #先得到所有酒店
     #先从距离表中获取该地点到所有酒店的距离
     #形式为[酒店名称，距离，评分，评论数，价格，类型，地点]
-    all_hotels=get_distanceFromDB_1(place,type)
-    hotels=sort_comment(all_hotels)
-    results=output(hotels,0,city,checkin_time,checkout_time)
-    return python_to_json(results,0)
+    try:
+        all_hotels=get_distanceFromDB_1(place,type)
+        hotels=sort_comment(all_hotels)
+        results=output(hotels,0,city,checkin_time,checkout_time)
+        return python_to_json(results,0)
+    except Exception as e:
+        print(e)
+        error_result={}
+        error_result['type']=2
+        error_result['data']=[]
+        return error_result
 
 #价格降序调用方法
 #该方法只适用于景点数为1的情况
@@ -122,10 +150,17 @@ def qxw_price_descend_output(city,places,checkin_time,checkout_time,type):
     #先得到所有酒店
     #先从距离表中获取该地点到所有酒店的距离
     #形式为[酒店名称，距离，评分，评论数，价格，类型，地点]
-    all_hotels=get_distanceFromDB_1(place,type)
-    hotels=sort_price_descend(all_hotels)
-    results=output(hotels,0,city,checkin_time,checkout_time)
-    return python_to_json(results,0)
+    try:
+        all_hotels=get_distanceFromDB_1(place,type)
+        hotels=sort_price_descend(all_hotels)
+        results=output(hotels,0,city,checkin_time,checkout_time)
+        return python_to_json(results,0)
+    except Exception as e:
+        print(e)
+        error_result={}
+        error_result['type']=2
+        error_result['data']=[]
+        return error_result
 
 #评分升序调用方法
 #该方法只适用于景点数为1的情况
@@ -134,10 +169,17 @@ def qxw_price_ascend_output(city,places,checkin_time,checkout_time,type):
     #先得到所有酒店
     #先从距离表中获取该地点到所有酒店的距离
     #形式为[酒店名称，距离，评分，评论数，价格，类型，地点]
-    all_hotels=get_distanceFromDB_1(place,type)
-    hotels=sort_price_ascend(all_hotels)
-    results=output(hotels,0,city,checkin_time,checkout_time)
-    return python_to_json(results,0)
+    try:
+        all_hotels=get_distanceFromDB_1(place,type)
+        hotels=sort_price_ascend(all_hotels)
+        results=output(hotels,0,city,checkin_time,checkout_time)
+        return python_to_json(results,0)
+    except Exception as e:
+        print(e)
+        error_result={}
+        error_result['type']=2
+        error_result['data']=[]
+        return error_result
 
 #测试
 # city='上海'
