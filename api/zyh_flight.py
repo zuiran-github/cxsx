@@ -137,14 +137,14 @@ def getTZURL(dep, arr, acity, dcity, day, airlineCode):
             arrXM = getCityID(acity[:4])
             arrHB = 'PKX'
             arrSD = 'pek'
-            arrLH = 'PKX'
+            # arrLH = 'PKX'
 
         if dep == 'BJS':
             depJX = 'PEK'
             depXM = getCityID(dcity[:4])
             depHB = 'PKX'
             depSD = 'pek'
-            depLH = 'PKX'
+            # depLH = 'PKX'
 
         acityname = getCityName(arr)
         dcityname = getCityName(dep)
@@ -354,6 +354,9 @@ def getTZURL(dep, arr, acity, dcity, day, airlineCode):
 
             # 浙江航空 东航管理
             'ZJ': '',
+
+            # 祥鹏航空
+            '8L': 'https://www.luckyair.net/flight/search.html',
 
             # 福州航空
             'FU': 'https://www.fuzhou-air.cn/b2c/search/searchflight.jsp?'
@@ -1982,7 +1985,6 @@ def trans_format(time_string, from_format, to_format='%Y.%m.%d %H:%M:%S'):
 #
 #     response = {"data": listfordict}
 #     return JsonResponse(response)
-
 
 
 def test():

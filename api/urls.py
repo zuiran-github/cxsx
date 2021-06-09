@@ -49,5 +49,6 @@ urlpatterns = [
     url(r"getSpotsInfo$", zwf_tupian.getInfo, ),  # 获取某个景点的详细信息
     url(r"getSpotsInfoofCity$", zwf_tupian.getInfoofCity, ),  # 获取某个城市的所有景点信息
     url(r"getYouhuiInfo$", zwf_yule_dazhongdianping.getYouhuiInfo, ),  # 获取优惠券信息
+    url(r"getSpotTAI$", zwf_searchSpots.getSpotTAI, ), #获取景点信息
 
 ]

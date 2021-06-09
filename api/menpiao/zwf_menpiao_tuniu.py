@@ -114,6 +114,7 @@ class TuNiuSpider:
         self.done = True
 
 
+
     def getCityUrl(self,city):
         '''
         获取城市的地址

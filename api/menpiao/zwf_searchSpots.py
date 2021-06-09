@@ -14,6 +14,7 @@ from django.http import JsonResponse
 import time
 from fuzzywuzzy import process
 from django.views.decorators.http import require_http_methods
+from .zwf_menpiaosort import sortmenpiao
 
 
 
@@ -204,8 +205,10 @@ def searchSpots(keyword, city):
         print(333)
         '''合并'''
         ti = merge(feizhu, xiecheng, tuniu, quna, lvmama, dahe, klook, tongcheng)
+        ti = sortmenpiao(ti)
         spotsInfo.append(ti)
         city_keywords.append(city+''+keyword)
+
 
     except Exception as e:
         print(e)
@@ -235,14 +238,38 @@ def getTicketInfo(request):
 
         spot = spotsInfo[len(spotsInfo)-1]
         response = {'data':spot}
-        # print(response)
+        print(response)
         return JsonResponse(response)
     else:
         index = city_keywords.index(result[0][0])
         spot = spotsInfo[index]
         response = {'data': spot}
-        # print(response)
+        print(response)
         return JsonResponse(response)
+
+
+
+@require_http_methods(["GET"])
+def getSpotTAI(request):
+    '''
+    外部调用
+    :param keyword:
+    :param city:
+    :return:
+    '''
+    keyword = request.GET.get('keyword')
+    print(request.GET)
+    print(keyword)
+    global tuniu
+    result = process.extractBests(keyword, tuniu.spots.keys(), score_cutoff=50, limit=1)
+    try:
+        response = {'data':tuniu.spots[result[0][0]]}
+    except Exception as e:
+        print(e)
+        response = {'data':{}}
+    print(response)
+    print(tuniu.spots)
+    return JsonResponse(response)
 
 
 

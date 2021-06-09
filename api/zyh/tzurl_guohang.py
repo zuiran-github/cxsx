@@ -12,7 +12,7 @@ def openChrome():
 
 def operationAuth(driver):
 
-    url = 'http://www.flycua.com/'
+    url = 'http://et.airchina.com.cn'
     driver.get(url)
 
     # 找到输入框并输入查询内容

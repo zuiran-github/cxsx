@@ -5,6 +5,8 @@ from django.views.decorators.http import require_http_methods
 from .agentIP import *
 from django.http import JsonResponse
 from .flight_xibu import *
+from .flight_chengdu import *
+from .flight_feizhu import *
 
 listfordict = []
 
@@ -1364,9 +1366,6 @@ def aokai(dep, arr, day):
 
 
 
-
-
-
 def trans_format(time_string, from_format, to_format='%Y.%m.%d %H:%M:%S'):
     """
     @note 时间格式转化
@@ -1378,6 +1377,7 @@ def trans_format(time_string, from_format, to_format='%Y.%m.%d %H:%M:%S'):
     time_struct = time.strptime(time_string,from_format)
     times = time.strftime(to_format, time_struct)
     return times
+
 # depcityname = '广州'
 # arrcityname = '南京'
 # day = '2021-05-21'
@@ -1419,6 +1419,8 @@ def search(depcode, arrcode, day):
     t5 = Thread(target=nanhang, args=(depcode, arrcode, day))
     t6 = Thread(target=aokai, args=(depcode, arrcode, day))
     t7 = Thread(target=xibu, args=(depcode, arrcode, day))
+    t8 = Thread(target=chengdu, args=(depcode, arrcode, day))
+    t9 = Thread(target=feizhu, args=(depcode, arrcode, day))
 
     t1.start()
     t2.start()
@@ -1427,6 +1429,8 @@ def search(depcode, arrcode, day):
     t5.start()
     t6.start()
     t7.start()
+    t8.start()
+    t9.start()
 
 
     # xiamen(day, depcode, arrcode)

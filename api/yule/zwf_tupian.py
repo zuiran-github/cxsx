@@ -90,6 +90,23 @@ class TupianSpider:
 def to_string(string):
     string.encode('gbk')
 
+
+filename = '/Users/zuiran/Documents/大三下/创新实训/proj4/api/yule/allScenic.json'
+inited = False
+list = {}
+
+
+def init():
+    global filename,inited,list
+    if inited:
+        return list
+    else:
+        with open(filename, 'r') as file:
+            list = json.load(file)
+            inited = True
+        return list
+
+
 @require_http_methods(["GET"])
 def getInfo(request):
     '''
@@ -105,21 +122,22 @@ def getInfo(request):
     list = {}
     # global file
     try:
-        filename = '/Users/zuiran/Documents/大三下/创新实训/proj4/api/yule/allScenic.json'
-        t0=time.time()
-        with open(filename, 'r') as file:
-            # file.encoding = 'gbk'
-            # files = file.read()
-            # files.encode('gbk')
-            list = json.load(file)
-            t1=time.time()
-            print(t1-t0)
+        # filename = '/Users/zuiran/Documents/大三下/创新实训/proj4/api/yule/allScenic.json'
+        # t0=time.time()
+        # with open(filename, 'r') as file:
+        #     # file.encoding = 'gbk'
+        #     # files = file.read()
+        #     # files.encode('gbk')
+        #     list = json.load(file)
+        #     t1=time.time()
+        #     print(t1-t0)
             # print(list)
             # print(len(list))
-            city = city.replace('市','')
-            result = process.extractBests(city, list.keys(), score_cutoff=80, limit=1)
-            result1 = process.extractBests(name, list[result[0][0]].keys(), score_cutoff=80, limit=1)
-            info = list[result[0][0]][result1[0][0]]
+        list = init()
+        city = city.replace('市','')
+        result = process.extractBests(city, list.keys(), score_cutoff=80, limit=1)
+        result1 = process.extractBests(name, list[result[0][0]].keys(), score_cutoff=80, limit=1)
+        info = list[result[0][0]][result1[0][0]]
         response = {'data': info}
         print(response)
         return JsonResponse(response)

@@ -13,7 +13,7 @@ import copy
 import numpy as np
 from .basicSort import sort_comprehensive_assess,sort_comment,sort_points,sort_distance,sort_price_ascend,sort_price_descend
 import math
-from .dataProcessing import distance,get_weights,get_distanceFromDB,get_distanceFromDB_1
+from .dataProcessing import distance,get_weights,get_distanceFromDB,get_distanceFromDB_1,database_connect
 from .LR import logistic_regression,LR
 
 """
@@ -24,10 +24,11 @@ from .LR import logistic_regression,LR
 """
 
 #要去的地点只有一个，综合排序
-def basic_recommend(city,place,checkin_time,checkout_time,weights,type):
+def basic_recommend(city,place,checkin_time,checkout_time,weights,type,cursor):
+    # cursor=database_connect()
     #先从距离表中获取该地点到所有酒店的距离
     #形式为[酒店名称，距离，评分，评论数，价格，类型，地点]
-    hotels=get_distanceFromDB_1(place,type)
+    hotels=get_distanceFromDB_1(place,type,cursor)
 
     #如何判断是采用初始综合评价方法，还是逻辑回归模型
     #可以手动设定
@@ -49,9 +50,11 @@ def basic_recommend(city,place,checkin_time,checkout_time,weights,type):
 
 #要去的地点多于一个，但是酒店入住日期只有一天
 #注意，输出结果中的距离应该具体到该酒店到那个地点的距离
-def multiple_locations(city,place,checkin_time,checkout_time,weights,type):
+def multiple_locations(city,place,checkin_time,checkout_time,weights,type,cursor):
+    cursor=database_connect()
     #可以设定输出酒店数量
     output_number=100
+    print(place)
     #先获取全部酒店的信息（从数据库中获取）:[酒店名称，类型，价格，评分，评论数]
     # all_hotels=get_all_hotels(city)
     #根据每一个地点进行推荐，得到一个推荐顺序
@@ -65,9 +68,10 @@ def multiple_locations(city,place,checkin_time,checkout_time,weights,type):
 
         # 先从距离表中获取该地点到所有酒店的距离
         # 形式为[酒店名称，距离，评分，评论数，价格，类型]
-        print(place[i])
-        all_hotels = get_distanceFromDB(place[i],type)
-
+        # print(place[i])
+        all_hotels = get_distanceFromDB(place[i],type,cursor)
+        # print('succcessful')
+        # print(all_hotels)
         # 处理矩阵，使其成为我想要的形式[名称，距离，评分，评论数，价格，类型，地点]
         for j in range(len(all_hotels)):
             all_hotels[j].append(place[i])
@@ -165,13 +169,13 @@ def multiple_locations(city,place,checkin_time,checkout_time,weights,type):
 
 #要去的地点多于一个，酒店入住日期多于一天
 #这个时候可以同时推荐多家酒店
-def multiple_locations_days(city,place,checkin_time,checkout_time,weights,type):
+def multiple_locations_days(city,place,checkin_time,checkout_time,weights,type,cursor):
     #计算出入住总晚数
     nights=night(checkin_time,checkout_time)
     #只入住一天，则调用multiple_locations方法
     if(nights==1):
         #返回形式为：[酒店名称，距离，评分，评论，价格，类型，地点，综合评分]
-        return multiple_locations(city,place,checkin_time,checkout_time,weights,type)
+        return multiple_locations(city,place,checkin_time,checkout_time,weights,type,cursor)
     else:
         #计算每个地点之间的相互距离，得到距离矩阵
         #判断是否有两个地点相隔较远，目前以12km为界限，后续考虑更新方法
@@ -209,7 +213,7 @@ def multiple_locations_days(city,place,checkin_time,checkout_time,weights,type):
                 if(group[0][i]!=999):
                     place_group_1.append(place[group[0][i]])
             #计算出第一组的推荐列表
-            hotels_1=multiple_locations(city,place_group_1,checkin_time,checkout_time,weights,type)
+            hotels_1=multiple_locations(city,place_group_1,checkin_time,checkout_time,weights,type,cursor)
             results.append(hotels_1)
             #得到第二组地点
             place_group_2=[]
@@ -217,7 +221,7 @@ def multiple_locations_days(city,place,checkin_time,checkout_time,weights,type):
                 if(group[1][i]!=999):
                     place_group_2.append(place[group[1][i]])
             #计算出第二组的推荐列表
-            hotels_2=multiple_locations(city,place_group_2,checkin_time,checkout_time,weights,type)
+            hotels_2=multiple_locations(city,place_group_2,checkin_time,checkout_time,weights,type,cursor)
             results.append(hotels_2)
             #判断是否存在第三组
             if(group[2][0]!=999):
@@ -227,7 +231,7 @@ def multiple_locations_days(city,place,checkin_time,checkout_time,weights,type):
                     if (group[2][i] != 999):
                         place_group_3.append(place[group[2][i]])
                 # 计算出第三组的推荐列表
-                hotels_3 = multiple_locations(city, place_group_3, checkin_time, checkout_time,weights,type)
+                hotels_3 = multiple_locations(city, place_group_3, checkin_time, checkout_time,weights,type,cursor)
                 results.append(hotels_3)
             #判断是否存在第四组
             if(group[3][0]!=999):
@@ -237,11 +241,11 @@ def multiple_locations_days(city,place,checkin_time,checkout_time,weights,type):
                     if (group[3][i] != 999):
                         place_group_4.append(place[group[3][i]])
                 # 计算出第四组的推荐列表
-                hotels_4 = multiple_locations(city, place_group_4, checkin_time, checkout_time,weights,type)
+                hotels_4 = multiple_locations(city, place_group_4, checkin_time, checkout_time,weights,type,cursor)
                 results.append(hotels_4)
         else:
             #返回形式为：[酒店名称，距离，评分，评论，价格，类型，地点，综合评分]
-            results=multiple_locations(city,place,checkin_time,checkout_time,weights,type)
+            results=multiple_locations(city,place,checkin_time,checkout_time,weights,type,cursor)
         return results
 
 #将地点按相互间的距离分组，最多四组，最少两组，每组地点数量不超过4个

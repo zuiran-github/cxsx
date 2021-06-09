@@ -11,6 +11,20 @@ import requests
 '''
 import pymysql
 
+def database_connect():
+    db = pymysql.connect(
+        host='8.140.178.29',
+        port=3306,
+        user='cxsx',
+        passwd='cxsx123',
+        db='cxsx',
+        charset='utf8'
+    )
+
+    # 使用cursor()方法创建一个游标对象cursor
+    cursor = db.cursor()
+    return cursor
+
 #获取训练数据
 def load_data():
     sql_data='select * from lr_data'
@@ -53,32 +67,36 @@ def get_weights():
 #每点击一次，存储一次，存储的数据为[id,hotel_name,time],time为存储时间
 #id每十分钟更新一次，从0开始，递增
 def qxw_clicks_saving(hotel_name,distance,score,comments,price):
-    #先搜索出当前id下的最早时间
-    sql_temp='select max(id_data),min(time) from lr_data'
-    cursor.execute(sql_temp)
-    result_data=cursor.fetchone()
-    time_early=result_data[1]
-    id=result_data[0]
-    #获取当前时间前十分钟
-    time_1=int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
-    time_2=int(time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()-600)))
-    #如果当前ID最早时间早于当前时间前十分钟，id+1
-    #否则仍然使用当前id
-    if(time_early<time_2):
-        id=id+1
-    values=(id,hotel_name,time_1,distance,score,comments,price)
-    sql_click='insert into lr_data (id_data,hotel_name,time,distance,score,comments,price) values (%s,%s,%s,%s,%s,%s,%s)'
-    cursor.execute(sql_click,values)
-    db.commit()
+    try:
+        #先搜索出当前id下的最早时间
+        sql_temp='select max(id_data),min(time) from lr_data'
+        cursor.execute(sql_temp)
+        result_data=cursor.fetchone()
+        # print(result_data)
+        time_early=result_data[1]
+        id=result_data[0]
+        #获取当前时间前十分钟
+        time_1=int(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time())))
+        time_2=int(time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()-600)))
+        #如果当前ID最早时间早于当前时间前十分钟，id+1
+        #否则仍然使用当前id
+        if(time_early<time_2):
+            id=id+1
+        values=(id,hotel_name,time_1,distance,score,comments,price)
+        sql_click='insert into lr_data (id_data,hotel_name,time,distance,score,comments,price) values (%s,%s,%s,%s,%s,%s,%s)'
+        cursor.execute(sql_click,values)
+        db.commit()
 
-    #搜索出上次训练时间
-    sql_train='select max(train_time) from lrweights'
-    cursor.execute(sql_train)
-    last_train_time=cursor.fetchone()
-    #若距离上次训练时间已经过去了十分钟，则再次训练
-    if(last_train_time<time_2):
-        x,y=load_data()
-        LR(x,y)
+        #搜索出上次训练时间
+        sql_train='select max(train_time) from lrweights'
+        cursor.execute(sql_train)
+        last_train_time=cursor.fetchone()[0]
+        #若距离上次训练时间已经过去了十分钟，则再次训练
+        # if(last_train_time<time_2):
+        #     x,y=load_data()
+        #     LR(x,y)
+    except Exception as e:
+        print(e)
 
 #去哪儿
 def getCityName(city):
@@ -160,7 +178,7 @@ def get_lng_lat(address):
         return lng,lat
 
 #从数据库中获取景点与与所有酒店之间的距离,并筛选类型
-def get_distanceFromDB(position,type):
+def get_distanceFromDB(position,type,cursor):
     if(type=='全部'):
         temp_sql="select * from distance where position like %s "
         cursor.execute(temp_sql,'%'+position+'%')
@@ -182,7 +200,8 @@ def get_distanceFromDB(position,type):
         return results
 
 #从数据库中获取景点与与所有酒店之间的距离,并筛选类型,且在最后加上地点
-def get_distanceFromDB_1(position,type):
+def get_distanceFromDB_1(position,type,cursor):
+    # cursor=database_connect()
     if(type=='全部'):
         temp_sql="select * from distance where position like %s "
         cursor.execute(temp_sql,'%'+position+'%')
@@ -216,14 +235,14 @@ def get_distanceFromDB_1(position,type):
 #       picture:''},{...}]
 #目前我们只需要输出前100名酒店即可
 #可以随时改变输出数量
-def output(hotels,group,city,checkintime,checkouttime):
+def output(hotels,group,city,checkintime,checkouttime,cursor):
     output_number=20
     if(city=='上海'):
-        sql_1 = "select * from hotel_web where Hotel_name=%s and Web_name=%s"
+        sql_1 = "select * from hotel_web where Hotel_name=%s group by Web_name"
     elif(city=='济南'):
-        sql_1 = "select * from hotel_jinan where Hotel_name=%s and Web_name=%s"
+        sql_1 = "select * from hotel_jinan where Hotel_name=%s group by Web_name"
     else:
-        sql_1 = "select * from hotel_beijin where Hotel_name=%s and Web_name=%s"
+        sql_1 = "select * from hotel_beijin where Hotel_name=%s group by Web_name"
 
     #不分组
     if(group==0):
@@ -233,118 +252,86 @@ def output(hotels,group,city,checkintime,checkouttime):
             results[i]=[]
             results[i].append(hotels[i][0])
             # sql_1="select * from hotel_web where Hotel_name=%s and Web_name=%s"
-            values_1=(hotels[i][0],'去哪儿')
-            cursor.execute(sql_1,values_1)
-            results_1=cursor.fetchone()
-            if(results_1==None):
-                web_1=['去哪儿', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
-                               None, hotels[i][6]]
-            else:
-                web_1=['去哪儿', hotels[i][1], hotels[i][2], hotels[i][3], results_1[3], hotels[i][5],
-                               getLink(city, results_1[6], checkintime, checkouttime, '去哪儿'), hotels[i][6]]
-            values_2=(hotels[i][0],'飞猪')
-            cursor.execute(sql_1,values_2)
-            results_2=cursor.fetchone()
-            if(results_2==None):
-                web_2=['飞猪', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
-                               None, hotels[i][6]]
-            else:
-                web_2=['飞猪', hotels[i][1], hotels[i][2], hotels[i][3], results_2[3], hotels[i][5],
-                               getLink(city, results_2[6], checkintime, checkouttime, '飞猪'), hotels[i][6]]
-            values_3=(hotels[i][0],'途牛')
-            cursor.execute(sql_1,values_3)
-            results_3=cursor.fetchone()
-            if(results_3==None):
-                web_3=['途牛', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
-                               None, hotels[i][6]]
-            else:
-                web_3=['途牛', hotels[i][1], hotels[i][2], hotels[i][3], results_3[3], hotels[i][5],
-                               getLink(city, results_3[6], checkintime, checkouttime, '途牛'), hotels[i][6]]
-            values_4=(hotels[i][0],'携程')
-            cursor.execute(sql_1,values_4)
-            results_4=cursor.fetchone()
-            if(results_4==None):
-                web_4=['携程', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
-                               None, hotels[i][6]]
-            else:
-                web_4=['携程', hotels[i][1], hotels[i][2], hotels[i][3], results_4[3], hotels[i][5],
-                               getLink(city, results_4[6], checkintime, checkouttime, '携程'), hotels[i][6]]
-            values_5=(hotels[i][0],'艺龙')
-            cursor.execute(sql_1,values_5)
-            results_5=cursor.fetchone()
-            if(results_5==None):
-                web_5=['艺龙', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
-                               None, hotels[i][6]]
-            else:
-                web_5=['艺龙', hotels[i][1], hotels[i][2], hotels[i][3], results_5[3], hotels[i][5],
-                               getLink(city, results_5[6], checkintime, checkouttime, '艺龙'), hotels[i][6]]
+            # values_1=(hotels[i][0],'去哪儿')
+            web_1 = ['去哪儿', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
+                     None, hotels[i][6]]
+            web_2 = ['飞猪', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
+                     None, hotels[i][6]]
+            web_3 = ['途牛', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
+                     None, hotels[i][6]]
+            web_4 = ['携程', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
+                     None, hotels[i][6]]
+            web_5 = ['艺龙', hotels[i][1], hotels[i][2], hotels[i][3], 0, hotels[i][5],
+                     None, hotels[i][6]]
+            cursor.execute(sql_1,hotels[i][0])
+            results_1=cursor.fetchall()
+            for row in results_1:
+                if(row[1]=='去哪儿'):
+                    web_1 = ['去哪儿', hotels[i][1], row[4],row[5] ,row[3], hotels[i][5],
+                             getLink(city, row[6], checkintime, checkouttime, '去哪儿'), hotels[i][6]]
+                if(row[1]=='携程'):
+                    web_4 = ['携程', hotels[i][1], row[4],row[5] , row[3], hotels[i][5],
+                             getLink(city, row[6], checkintime, checkouttime, '携程'), hotels[i][6]]
+                if(row[1]=='飞猪'):
+                    web_2 = ['飞猪', hotels[i][1], row[4],row[5] , row[3], hotels[i][5],
+                             getLink(city, row[6], checkintime, checkouttime, '飞猪'), hotels[i][6]]
+                if(row[1]=='途牛'):
+                    web_3 = ['途牛', hotels[i][1], row[4],row[5] , row[3], hotels[i][5],
+                             getLink(city, row[6], checkintime, checkouttime, '途牛'), hotels[i][6]]
+                if(row[1]=='艺龙'):
+                    web_5 = ['艺龙', hotels[i][1], row[4],row[5] , row[3], hotels[i][5],
+                             getLink(city, row[6], checkintime, checkouttime, '艺龙'), hotels[i][6]]
             results[i].append([web_4,
-                              web_1,
-                              web_2,
-                              web_3,
-                              web_5])
-            results[i].append(results_2[7])
+                                       web_1,
+                                       web_2,
+                                       web_3,
+                                       web_5])
+                    # print(results_2)
+            results[i].append(results_1[0][7])
         return results
     else:
         results=[0 for i in range(group)]
         for k in range(group):
-            results[k] = [0 for i in range(output_number)]
+            results[k]=[0 for i in range(output_number)]
             for i in range(output_number):
                 # 可能会出现部分酒店在这五个网站中不同时出现，此时判断结果是否为空，若为空，则结果集不为空，但是返回数据均为空
                 results[k][i] = []
                 results[k][i].append(hotels[k][i][0])
-                # sql_1 = "select * from hotel_web where Hotel_name=%s and Web_name=%s"
-                values_1 = (hotels[k][i][0], '去哪儿')
-                cursor.execute(sql_1, values_1)
-                results_1 = cursor.fetchone()
-                if (results_1 == None):
-                    web_1 = ['去哪儿', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
-                             None, hotels[k][i][6]]
-                else:
-                    web_1 = ['去哪儿', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], results_1[3], hotels[k][i][5],
-                             getLink(city, results_1[6], checkintime, checkouttime, '去哪儿'), hotels[k][i][6]]
-                values_2 = (hotels[k][i][0], '飞猪')
-                cursor.execute(sql_1, values_2)
-                results_2 = cursor.fetchone()
-                if (results_2 == None):
-                    web_2 = ['飞猪', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
-                             None, hotels[k][i][6]]
-                else:
-                    web_2 = ['飞猪', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], results_2[3], hotels[k][i][5],
-                             getLink(city, results_2[6], checkintime, checkouttime, '飞猪'), hotels[k][i][6]]
-                values_3 = (hotels[k][i][0], '途牛')
-                cursor.execute(sql_1, values_3)
-                results_3 = cursor.fetchone()
-                if (results_3 == None):
-                    web_3 = ['途牛', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
-                             None, hotels[k][i][6]]
-                else:
-                    web_3 = ['途牛', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], results_3[3], hotels[k][i][5],
-                             getLink(city, results_3[6], checkintime, checkouttime, '途牛'), hotels[k][i][6]]
-                values_4 = (hotels[k][i][0], '携程')
-                cursor.execute(sql_1, values_4)
-                results_4 = cursor.fetchone()
-                if (results_4 == None):
-                    web_4 = ['携程', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
-                             None, hotels[k][i][6]]
-                else:
-                    web_4 = ['携程', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], results_4[3], hotels[k][i][5],
-                             getLink(city, results_4[6], checkintime, checkouttime, '携程'), hotels[k][i][6]]
-                values_5 = (hotels[k][i][0], '艺龙')
-                cursor.execute(sql_1, values_5)
-                results_5 = cursor.fetchone()
-                if (results_5 == None):
-                    web_5 = ['艺龙', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
-                             None, hotels[k][i][6]]
-                else:
-                    web_5 = ['艺龙', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], results_5[3], hotels[k][i][5],
-                             getLink(city, results_5[6], checkintime, checkouttime, '艺龙'), hotels[k][i][6]]
+                cursor.execute(sql_1, hotels[k][i][0])
+                results_1 = cursor.fetchall()
+                web_1 = ['去哪儿', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
+                         None, hotels[k][i][6]]
+                web_2 = ['飞猪', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
+                         None, hotels[k][i][6]]
+                web_3 = ['途牛', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
+                         None, hotels[k][i][6]]
+                web_4 = ['携程', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
+                         None, hotels[k][i][6]]
+                web_5 = ['艺龙', hotels[k][i][1], hotels[k][i][2], hotels[k][i][3], 0, hotels[k][i][5],
+                         None, hotels[k][i][6]]
+                for row in results_1:
+                    if (row[1] == '去哪儿'):
+                        # print(row[4])
+                        web_1 = ['去哪儿', hotels[k][i][1],row[4],row[5] , row[3], hotels[k][i][5],
+                             getLink(city, row[6], checkintime, checkouttime, '去哪儿'), hotels[k][i][6]]
+                    if (row[1] == '携程'):
+                        web_4 = ['携程', hotels[k][i][1], row[4],row[5] ,row[3], hotels[k][i][5],
+                                 getLink(city, row[6], checkintime, checkouttime, '携程'), hotels[k][i][6]]
+                    if (row[1] == '飞猪'):
+                        web_2 = ['飞猪', hotels[k][i][1],row[4],row[5] , row[3], hotels[k][i][5],
+                                 getLink(city, row[6], checkintime, checkouttime, '飞猪'), hotels[k][i][6]]
+                    if (row[1] == '途牛'):
+                        web_3 = ['途牛', hotels[k][i][1],row[4],row[5] , row[3], hotels[k][i][5],
+                                 getLink(city, row[6], checkintime, checkouttime, '途牛'), hotels[k][i][6]]
+                    if (row[1] == '艺龙'):
+                        web_5 = ['艺龙', hotels[k][i][1],row[4],row[5] ,row[3], hotels[k][i][5],
+                                 getLink(city, row[6], checkintime, checkouttime, '艺龙'), hotels[k][i][6]]
                 results[k][i].append([web_4,
-                                      web_1,
-                                      web_2,
-                                      web_3,
-                                      web_5])
-                results[k][i].append(results_1[7])
+                                   web_1,
+                                   web_2,
+                                   web_3,
+                                   web_5])
+                results[k][i].append(results_1[0][7])
         return results
 
 def python_to_json(results,group):

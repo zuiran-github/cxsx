@@ -197,4 +197,7 @@ def qxw_dianji(request):
     price = request.GET.get('price')
     print(request.GET)
 
-    dataProcessing.qxw_clicks_saving(hotel_name, distance, score, comments, price)
+    # dataProcessing.qxw_clicks_saving(hotel_name, distance, score, comments, price)
+
+    response = {'data': []}
+    return JsonResponse(response, safe=False)
